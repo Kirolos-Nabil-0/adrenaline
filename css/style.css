@@ -1,0 +1,348 @@
+body {
+    background-color: #f8f9fd;
+    font-family: "DroidArabicKufiRegular" !important;
+    font-weight: normal;
+    font-style: normal;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
+
+.font-family {
+    font-family: Roboto, sans-serif;
+}
+
+.form-register {
+    background-color: #fff;
+    box-shadow: 0px 10px 34px -15px rgb(0 0 0 / 24%);
+    padding: 50px;
+}
+.select2-container{
+    width: 100% !important;
+}
+.form-register i {
+    top: 13px;
+    left: 13px;
+}
+
+.form-buttons-select {
+    position: absolute;
+    width: 100%;
+    right: 0;
+    top: -55px;
+}
+
+.form-buttons-select p {
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    margin: 0;
+    padding: 15px 0;
+}
+
+.form-buttons-select p.active {
+    background-color: #fff;
+    border: 1px solid #dee2e6 !important;
+    border-bottom: 0 !important;
+}
+
+@media (max-width: 767px) {
+    .form-register {
+        padding: 30px;
+    }
+}
+
+.button-join {
+    color: #fff;
+    background-color: #ec5252;
+    border: 1px solid #ec5252;
+    padding: 10px 20px;
+    transition: 0.3s;
+}
+
+.special-button {
+    color: #fff;
+    background-color: #4d96c3;
+    border: 1px solid #4d96c3;
+}
+
+.button-join:hover {
+    background-color: #282121;
+    border: 1px solid #282121;
+}
+
+.User-area {
+    width: 45px;
+    height: 45px;
+    position: relative;
+    cursor: pointer;
+}
+
+.User-area > .User-avtar {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    border: 2px solid #fff;
+    box-shadow: 0px 0px 12px -5px #000;
+}
+
+.User-area > .User-avtar > img {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+}
+
+.User-Dropdown {
+    display: none;
+    position: absolute;
+    border-radius: 7px;
+    background: #fff;
+    box-shadow: 0px 0px 8px rgba(214, 214, 214, 0.78);
+    list-style: none;
+    padding: 0 20px;
+    width: 150px;
+    margin: 0;
+    top: 70px;
+    left: 5px;
+    z-index: 9999;
+}
+
+.User-Dropdown:before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    margin-left: -0.5em;
+    left: 35px;
+    box-sizing: border-box;
+    border: 7px solid black;
+    border-color: transparent transparent #ffffff #ffffff;
+    transform-origin: 0 0;
+    transform: rotate(135deg);
+    box-shadow: -3px 3px 3px -3px rgba(214, 214, 214, 0.78);
+}
+
+.User-Dropdown.U-open {
+    display: block;
+}
+
+.User-Dropdown > li {
+    padding: 0px;
+    line-height: 47px;
+    border-bottom: 1px solid rgba(215, 215, 215, 0.17);
+}
+
+.User-Dropdown > li:last-child {
+    border-bottom: 0px;
+}
+
+.User-Dropdown > li > a {
+    font-size: 13px;
+    text-decoration: none;
+    color: #1787e0;
+    transition: all 0.2s ease-out;
+    display: block;
+}
+
+.User-Dropdown span {
+    background: #16d67a;
+    padding: 3px 10px;
+    color: #fff;
+    border-radius: 30px;
+    font-size: 13px;
+}
+
+.User-Dropdown > li:before {
+    content: "";
+    width: 0px;
+    height: 40px;
+    position: absolute;
+    background: #2196f3;
+    margin-top: 4px;
+    border-radius: 0 1px 1px 0;
+    left: 0px;
+    transition: all 0.2s ease;
+}
+
+.User-Dropdown > li:hover:before {
+    width: 5px;
+    border-radius: 30px;
+}
+
+.User-Dropdown > li a:hover {
+    margin-left: 5px;
+}
+
+.small-size {
+    display: grid;
+    height: 100vh;
+    place-items: center;
+}
+
+.banner {
+    background-image: url(../images/home-banner.jpg);
+    height: 530px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 170px;
+    position: relative;
+    color: #fff;
+    background-position:center;
+    display: grid;
+    align-items: flex-start;
+    justify-content: flex-start;
+    align-content: center;
+}
+
+.banner h1 {
+    position: relative;
+    z-index: 1000;
+}
+
+.banner .shadow {
+    background-color: #00000080;
+}
+
+@media (max-width: 767px) {
+    .banner {
+        padding: 20px;
+    }
+}
+
+.search-form i {
+    left: 15px;
+    top: 11px;
+}
+
+.font-family {
+    font-family: Roboto, sans-serif;
+}
+
+.form-edit-info i {
+    left: 15px;
+    bottom: 11px;
+}
+
+.course-item-card {
+    transition: 0.3s;
+    box-shadow: 0 0 1px 1px rgb(20 23 28 / 10%), 0 3px 5px 0 rgb(20 23 28 / 10%);
+}
+
+.course-item-card:hover {
+    transform: rotate(5deg) scale(1.03);
+    box-shadow: 0 0 1px 1px rgb(20 23 28 / 10%), 0 7px 5px 0 rgb(20 23 28 / 10%);
+}
+
+.course-img {
+    height: 200px;
+}
+
+.profile-pic {
+    color: transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.profile-pic input {
+    display: none;
+}
+
+.profile-pic img {
+    position: absolute;
+    object-fit: cover;
+    width: 165px;
+    height: 165px;
+    box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.35);
+    border-radius: 100px;
+    z-index: 0;
+}
+
+.profile-pic .-label {
+    cursor: pointer;
+    height: 165px;
+    width: 165px;
+}
+
+.profile-pic:hover .-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    color: #fafafa;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 100px;
+    margin-bottom: 0;
+}
+
+.profile-pic span {
+    display: inline-flex;
+    padding: 0.2em;
+    height: 2em;
+}
+
+.course-information {
+    background-color: #29303b;
+}
+
+.what-you-get-box {
+    background-color: #f9f9f9;
+    border: 1px solid #dedfe0;
+    padding: 10px 15px;
+    margin-top: 40px;
+}
+
+.lecture {
+    padding: 12px 30px 12px 73px;
+    position: relative;
+    border: 1px solid #e8e9eb;
+    color: #686f7a;
+}
+
+.course-box-info {
+    top: -151px;
+    position: relative;
+}
+
+.course-box-info .card {
+    box-shadow: 0 0 1px 1px rgb(20 23 28 / 10%), 0 3px 5px 0 rgb(20 23 28 / 10%);
+}
+
+@media (max-width: 992px) {
+    .course-box-info {
+        top: 0;
+    }
+
+    .course-box-info .card {
+        width: 100% !important;
+    }
+
+    .course-main {
+        flex-direction: column;
+    }
+
+    .lecture {
+        flex-direction: column-reverse;
+        padding: 10px 17px 12px 12px;
+    }
+}
+
+.search-form i {
+    left: 15px;
+    top: 11px;
+}
+
+.course-item-card {
+    transition: 0.3s;
+    box-shadow: 0 0 1px 1px rgb(20 23 28 / 10%), 0 3px 5px 0 rgb(20 23 28 / 10%);
+}
+
+.course-item-card:hover {
+    transform: rotate(5deg) scale(1.03);
+    box-shadow: 0 0 1px 1px rgb(20 23 28 / 10%), 0 7px 5px 0 rgb(20 23 28 / 10%);
+}
+

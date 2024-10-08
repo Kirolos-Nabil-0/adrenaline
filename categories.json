@@ -1,0 +1,30 @@
+[
+  {
+    "CategoryId": 1,
+    "CategoryPic": null,
+    "IsActive": true,
+    "DescriptionTlen": "Category Disc",
+    "CategoryTlar": "عطور 1",
+    "CategoryTlen": "perfumes 1",
+    "DescriptionTlar": "وصف الصنف",
+    "SortOrder": 1,
+    "Item": [
+        {
+            "ItemId": 1,
+            "ItemTitleAr": "اسم العطر",
+            "ItemTitleEn": "perfume name",
+            "ItemImage": null,
+            "ItemDescriptionAr": "وصف العطر",
+            "ItemDescriptionEn": "perfume description",
+            "IsActive": 1,
+            "OrderIndex": 1,
+            "OutOfStock": null,
+            "CategoryId": 1,
+            "Weight": null,
+            "ItemImageNavigation": [],
+            "ItemPrice": [],
+            "OrderItem": []
+        }
+    ]
+  }
+]
