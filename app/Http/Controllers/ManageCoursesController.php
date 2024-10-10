@@ -9,8 +9,11 @@ use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\Courses;
 use App\Models\Section;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -135,10 +138,10 @@ class ManageCoursesController extends Controller
 
 
 
-        if (($user->role == "instructor" && $user->id == $courseId->created_by) || $user->role == "admin") {
+        if (($user->role == "instructor" && $user->id == $courseId->created_by) || ($user->role == "center" && $user->id == $courseId->created_by) || $user->role == "admin") {
             $can_add_authorize = true;
         }
-        if ($user->role == "instructor" || $user->role == "admin") {
+        if ($user->role == "instructor" || $user->role == "admin" || $user->role == "center") {
             $authorized = CourseModifier::where('user_id', $user->id)->first();
             if ($user->id == $courseId->created_by || $authorized || $user->role == "admin") {
 
@@ -313,24 +316,65 @@ class ManageCoursesController extends Controller
         ]);
         return redirect()->back();
     }
-    //    End delete and update section
 
-    //    Start delete and update lesson
+    public function deleteLesson($id){
 
-    public function deleteLesson($id)
-    {
+        $lesson = Lesson::find($id);
+        if(!$lesson){
+            throw new Exception("Lesson Not Found",404);
+            
+        }
+        
+        // Check if the file exists
+        if($lesson->video){
+            $existingVideoPath = $lesson->video;
+            $localPath = public_path('uploaded/videos/' . basename($existingVideoPath));
 
-        Lesson::find($id)->delete();
+            if (File::exists($localPath)) {
+                File::delete($localPath);
+            }
+        }
+
+        // Check if the file exists
+        if($lesson->pdf_attach){
+            $existingpdfPath = $lesson->pdf_attach;
+            $localPath = public_path('uploaded/attachments/' . basename($existingpdfPath));
+
+            if (File::exists($localPath)) {
+                File::delete($localPath);
+            }
+        }
+
+        $lesson->delete();
         return redirect()->back();
     }
 
-    public function updateLesson(Request $request, $id)
-    {
+    public function editLesson($id){
+        $les = Lesson::find($id);
+        if($les){
+            $course = $les->section->course;
+            $sections = $course->section;
+            return view(
+                'dashboard.edit-lesson',
+                compact('les', 'course', 'sections')
+            );
+        }else{
+            throw new Exception("Lesson Not found", 404);
+        }
+    }
+
+    public function updateLesson(Request $request, $id){
+        $lesson = Lesson::find($id);
+        if(!$lesson){
+            throw new Exception("Lesson not found", 404);
+        }
         // Validation rules
         $rules = [
             'lesson_name' => 'required',
-            'url' => 'required',
             'is_lecture_free' => 'boolean',  // Add validation for the checkbox
+            'video_type' => 'required|in:video_url,video_upload',
+            'url' => 'required_if:video_type,video_url|nullable|url',
+            'uploaded_video_path' => 'nullable|string'
         ];
     
         $validator = Validator::make($request->all(), $rules);
@@ -339,7 +383,31 @@ class ManageCoursesController extends Controller
         }
     
         // Get all request data
-        $data = $request->all();
+        $data = [
+            'lesson_name' => $request->input('lesson_name'),
+            'section_id' => $request->input('section_id'),
+            'url' => $request->input('url') ?? null,
+            'duration' => $request->input('duration'),
+            'mcq_url' => $request->input('mcq_url'),
+            'is_lecture_free' => $request->input('is_lecture_free'),
+        ];
+        if(!($request->input('video_type') == 'video_upload' && $request->input('uploaded_video_path') == null)){
+            $data['video_type'] = $request->input('video_type');
+        }
+
+        if(($request->input("video_type") == 'video_upload' && $request->input("uploaded_video_path")) || ($request->input("video_type") == 'video_url' && $lesson->video != null)){
+            $data['video'] = $request->input('uploaded_video_path');
+
+            // Check if the file exists
+            if($lesson->video){
+                $existingVideoPath = $lesson->video;
+                $localPath = public_path('uploaded/videos/' . basename($existingVideoPath));
+
+                if (File::exists($localPath)) {
+                    File::delete($localPath);
+                }
+            }
+        }
     
         // Handle file upload if present
         if ($request->hasFile('pdf_attach')) {
@@ -348,18 +416,27 @@ class ManageCoursesController extends Controller
             $path = 'uploaded/attachments';
             $request->pdf_attach->move($path, $file_name);
             $data['pdf_attach'] = $file_name;
+
+            // Check if the file exists
+            if($lesson->pdf_attach){
+                $existingpdfPath = $lesson->pdf_attach;
+                $localPath = public_path('uploaded/attachments/' . basename($existingpdfPath));
+
+                if (File::exists($localPath)) {
+                    File::delete($localPath);
+                }
+            }
         }
     
         // Ensure the 'is_lecture_free' field is set to false if not checked
         $data['is_lecture_free'] = $request->has('is_lecture_free') ? true : false;
     
         // Update the lesson with the new data
-        Lesson::find($id)->update($data);
+        $lesson->update($data);
     
         return redirect()->back();
     }
-    public function rateCourse($course_id, $rate)
-    {
+    public function rateCourse($course_id, $rate){
         Courses::find($course_id)->update(['rate' => $rate]);
         return response()->json([
             'success' => true
@@ -367,8 +444,7 @@ class ManageCoursesController extends Controller
     }
 
 
-    public function orderLesons(Request $request)
-    {
+    public function orderLesons(Request $request){
         foreach ($request['lessons'] as $key => $value) {
             $lesson = Lesson::find($value);
             if ($lesson) {

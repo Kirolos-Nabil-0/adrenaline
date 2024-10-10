@@ -27,12 +27,6 @@ class CreateCoursesTable extends Migration
 
             $table->unsignedBigInteger('semester_id')->nullable();
             $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade');
-            
-            $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('module_id')->nullable()->constrained('modules');
-            $table->integer('is_archived')->default(0);
-            $table->boolean('free')->default(false);
-            $table->string('rate')->default(0);
             $table->timestamps();
         });
     }

@@ -32,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
             $user=auth()->user();
             return $user&&$user->role=='instructor';
         });
+        Blade::if('center',function(){
+            $user=auth()->user();
+            return $user&&$user->role=='center';
+        });
         Blade::if('dashboard',function(){
             $user=auth()->user();
             return $user&&($user->role=='instructor'||$user->role=='admin');

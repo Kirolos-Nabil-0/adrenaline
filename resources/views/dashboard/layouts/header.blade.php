@@ -2,12 +2,12 @@
       integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.26.0/apexcharts.min.css"
       integrity="sha512-JQIBcZTDAWa1umaHZvCXqHC1xa4jU8NyTWFCV977oIcbcLFdqtRxgoNC1CEv3c9GJWdIj4Vs7jfhgDQSEkpMMQ=="
-      crossorigin="anonymous"/>
+      crossorigin="anonymous"/> -->
 {{--<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>--}}
 
 
 <link rel="stylesheet" href="{{asset('css/dashboard/select2.min.css') }}">
-<link rel="stylesheet" href="{{asset('css/dashboard/main.css') }}"> -->
+<link rel="stylesheet" href="{{asset('css/dashboard/main.css') }}">
 
 <link rel="icon" href="{{URL::asset('css/dashboard/new/img/brand/favicon.png')}}" type="image/x-icon"/>
 <!-- Icons css -->

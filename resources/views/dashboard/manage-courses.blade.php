@@ -313,8 +313,6 @@
                         @foreach ($sec->lesson->sortBy('order') as $les)
                             <div class="border p-3 position-relative mb-3 d-flex justify-content-between align-items-center card-draggable"
                                 data-id="{{ $les->id }}">
-                                {{-- <img src="{{asset('images/SVG/media-play.svg')}}" width="20" height="20" alt="" --}}
-                                {{-- style="cursor: pointer"> --}}
                                 <div>
                                     <span class="fw-bold">{{ $les->lesson_name }}</span>
                                 </div>
@@ -324,8 +322,7 @@
                                                 class="fa fa-paperclip text-success" title="Show attached file"></i></a>
                                     @endif
                                     {{ $les->is_lecture_free ? 'Free lecture' : '' }}
-                                    <a data-effect="effect-scale" data-toggle="modal"
-                                        href="#lesson-{{ $les->id }}">
+                                    <a href="{{ route("edit-lesson", $les) }}">
                                         <button class="btn rounded-0 text-primary p-1" type="button">
                                             <i class="fa fa-edit"></i>
                                         </button>
@@ -339,127 +336,6 @@
                                         </i>
                                     </button>
                                 </div>
-                                <!-- modal edit lesson here -->
-
-                                <div class="modal fade" id="lesson-{{ $les->id }}" tabindex="-1"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Edit Lesson</h5>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="{{ route('update-lesson', $les->id) }}"
-                                                    enctype="multipart/form-data" method="post">
-                                                    @csrf
-                                                    <div class="form-group">
-                                                        <label for="lessonnameedit">Lesson title <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control" id="lessonnameedit"
-                                                            name="lesson_name" value="{{ $les->lesson_name }}"
-                                                            placeholder="Lesson Name" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="sectionselect">Section <span
-                                                                class="text-danger">*</span></label>
-                                                        <select name="section_id" id="sectionselect"
-                                                            class="form-control">
-
-                                                            @foreach ($courseId->section as $sec)
-                                                                <option value="{{ $sec->id }}"
-                                                                    @if ($sec->id == $les->section_id) selected @endif>
-                                                                    {{ $sec->section_name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="videourl">Video URL <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="text" name="url" class="form-control"
-                                                            id="videourl" placeholder="URL" value="{{ $les->url }}"
-                                                            required>
-                                                        @error('url')
-                                                            <small class="form-text text-danger">{{ $message }}</small>
-                                                        @enderror
-                                                    </div>
-                                                   @if ($les->video_type == 'video_upload')
-                                                   <div class="form-group">
-                                                    <video controls style="width: 100%; max-height: 500px;">
-                                                        <source src="{{ asset($les->video) }}" type="video/mp4">
-                                                        Your browser does not support the video tag.
-                                                    </video>
-                                                </div>
-                                                   @endif
-                                                    <div class="form-group">
-                                                        <label for="videourl">Duration <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="text" name="duration" class="form-control"
-                                                            id="duration" placeholder="Duration"
-                                                            value="{{ $les->duration }}">
-                                                        @error('duration')
-                                                            <small class="form-text text-danger">{{ $message }}</small>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="mcq_url">MCQ Link </label>
-                                                        <input type="url" name="mcq_url" class="form-control"
-                                                            id="mcq_url" placeholder="MCQ Link"
-                                                            value="{{ $les->mcq_url }}">
-                                                        @error('mcq_url')
-                                                            <small class="form-text text-danger">{{ $message }}</small>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="is_lecture_free">Lecture free</label>
-                                                        <!-- Hidden field to ensure a value is sent even when unchecked -->
-                                                        <input type="checkbox" name="is_lecture_free" id="is_lecture_free" 
-                                                        placeholder="MCQ Link" value="{{ $les->is_lecture_free }}" 
-                                                        {{ $les->is_lecture_free ? 'checked' : '' }}>
-                                                        @error('is_lecture_free')
-                                                            <small class="form-text text-danger">{{ $message }}</small>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="pdf_attach">PDF File </label>
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="position-relative">
-                                                                <input type="file" name="pdf_attach"
-                                                                    class="custom-file-input" id="pdf_attach"
-                                                                    placeholder="pdf attach" accept="application/pdf">
-                                                                <label class="custom-file-label" for="pdf_attach">Choose
-                                                                    file</label>
-                                                                @error('pdf_attach')
-                                                                    <small
-                                                                        class="form-text text-danger">{{ $message }}</small>
-                                                                @enderror
-                                                            </div>
-                                                            <div class="">
-                                                                @if ($les->pdf_attach)
-                                                                    <a class="btn btn-success w-100" target="_blank"
-                                                                        href="{{ $les->pdf_attach }}">Show attached
-                                                                        file</a>
-                                                                @else
-                                                                    No attachments
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-dismiss="modal">Close
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary">Save
-                                                            changes
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- modal edit lesson here -->
                             </div>
                         @endforeach
                     </div>
@@ -580,7 +456,7 @@
                                         <div id="upload-failure" class="alert alert-danger mt-2" style="display: none;">
                                             Video upload failed. Please try again.
                                         </div>
-                                    @error('url')
+                                    @error('uploaded_video_path')
                                         <small class="form-text text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
@@ -676,94 +552,94 @@
         });
 
 
-        $(document).ready(function () {
-    const videoTypeSelect = $('#video_type');
-    const videoUrlContainer = $('#video_url_container');
-    const videoUploadContainer = $('#video_upload_container');
-    const videoUrlInput = $('#uploaded_video_path');
-    const videoInput = $('#videoupload');
-    const progressBar = $('#progress');
-    const progressContainer = $('#progress-container');
-    const successBadge = $('#upload-success');
-    const failureBadge = $('#upload-failure');
-    const submitButton = $('#submit-button');
+    $(document).ready(function () {
+        const videoTypeSelect = $('#video_type');
+        const videoUrlContainer = $('#video_url_container');
+        const videoUploadContainer = $('#video_upload_container');
+        const videoUrlInput = $('#uploaded_video_path');
+        const videoInput = $('#videoupload');
+        const progressBar = $('#progress');
+        const progressContainer = $('#progress-container');
+        const successBadge = $('#upload-success');
+        const failureBadge = $('#upload-failure');
+        const submitButton = $('#submit-button');
 
-    // Hide video upload container initially
-    videoUploadContainer.hide();
-    progressContainer.hide();
-    successBadge.hide();
-    failureBadge.hide();
-    progressBar.hide();
-
-    // Toggle visibility based on video type selection
-    videoTypeSelect.on('change', function () {
-        if (this.value === 'video_url') {
-            videoUrlContainer.show();
-            videoUploadContainer.hide();
-            videoUrlInput.val(''); // Clear any uploaded path
-            successBadge.hide();
-            failureBadge.hide();
-        } else if (this.value === 'video_upload') {
-            videoUrlContainer.hide();
-            videoUploadContainer.show();
-            successBadge.hide();
-            failureBadge.hide();
-        }
-    });
-
-    // Event listener for when a video is selected for upload
-    videoInput.on('change', function () {
-        const videoFile = this.files[0];
-        if (!videoFile) return;
-
-        const formData = new FormData();
-        formData.append('video', videoFile);
-
-        // Reset the badge visibility when a new upload starts
+        // Hide video upload container initially
+        videoUploadContainer.hide();
+        progressContainer.hide();
         successBadge.hide();
         failureBadge.hide();
         progressBar.hide();
-        progressContainer.show();
-        submitButton.prop('disabled', true);
 
-        $.ajax({
-            url: '{{ route("upload-lesson-video") }}',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-              'X-CSRF-TOKEN' : '{{ csrf_token() }}'
-            },
-            xhr: function () {
-                const xhr = new window.XMLHttpRequest();
-                progressBar.show();
-                xhr.upload.addEventListener('progress', function (e) {
-                    if (e.lengthComputable) {
-                        const percentComplete = (e.loaded / e.total) * 100;
-                        progressBar.css('width', percentComplete + '%');
-                        progressBar.text(Math.round(percentComplete) + '%');
-                    }
-                });
-                return xhr;
-            },
-            success: function (response) {
-                // Set the video path in the hidden URL input after successful upload
-                videoUrlInput.val(response.video_path);
-                progressContainer.hide();
-                successBadge.show(); // Show the success badge
-                failureBadge.hide();
-                progressBar.hide();
-                submitButton.prop('disabled', false);
-            },
-            error: function (jqXHR) {
-                progressContainer.hide();
+        // Toggle visibility based on video type selection
+        videoTypeSelect.on('change', function () {
+            if (this.value === 'video_url') {
+                videoUrlContainer.show();
+                videoUploadContainer.hide();
+                videoUrlInput.val(''); // Clear any uploaded path
                 successBadge.hide();
-                failureBadge.show(); // Show the failure badge
+                failureBadge.hide();
+            } else if (this.value === 'video_upload') {
+                videoUrlContainer.hide();
+                videoUploadContainer.show();
+                successBadge.hide();
+                failureBadge.hide();
             }
         });
+
+        // Event listener for when a video is selected for upload
+        videoInput.on('change', function () {
+            const videoFile = this.files[0];
+            if (!videoFile) return;
+
+            const formData = new FormData();
+            formData.append('video', videoFile);
+
+            // Reset the badge visibility when a new upload starts
+            successBadge.hide();
+            failureBadge.hide();
+            progressBar.hide();
+            progressContainer.show();
+            submitButton.prop('disabled', true);
+
+            $.ajax({
+                url: '{{ route("upload-lesson-video") }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                'X-CSRF-TOKEN' : '{{ csrf_token() }}'
+                },
+                xhr: function () {
+                    const xhr = new window.XMLHttpRequest();
+                    progressBar.show();
+                    xhr.upload.addEventListener('progress', function (e) {
+                        if (e.lengthComputable) {
+                            const percentComplete = (e.loaded / e.total) * 100;
+                            progressBar.css('width', percentComplete + '%');
+                            progressBar.text(Math.round(percentComplete) + '%');
+                        }
+                    });
+                    return xhr;
+                },
+                success: function (response) {
+                    // Set the video path in the hidden URL input after successful upload
+                    videoUrlInput.val(response.video_path);
+                    progressContainer.hide();
+                    successBadge.show(); // Show the success badge
+                    failureBadge.hide();
+                    progressBar.hide();
+                    submitButton.prop('disabled', false);
+                },
+                error: function (jqXHR) {
+                    progressContainer.hide();
+                    successBadge.hide();
+                    failureBadge.show(); // Show the failure badge
+                }
+            });
+        });
     });
-});
 
     </script>
     <!--Internal  Chart.bundle js -->
@@ -808,7 +684,7 @@
     <script src="{{ URL::asset('js/dashboard/new/plugins/pickerjs/picker.min.js') }}"></script>
     <!-- Internal form-elements js -->
     <script src="{{ URL::asset('js/dashboard/new/js/form-elements.js') }}"></script>
-    <script src="{{ asset('js/dashboard/course.js') }}"></script>
+    <script src="{{ asset('js/dashboard/course.js') }}"></script> 
     <script src="{{ URL::asset('js/dashboard/new/js/modal.js') }}"></script>
     <script src="{{ URL::asset('js/dashboard/new/plugins/darggable/jquery-ui-darggable.min.js') }}"></script>
     <script src="{{ URL::asset('js/dashboard/new/plugins/darggable/darggable.js') }}"></script>

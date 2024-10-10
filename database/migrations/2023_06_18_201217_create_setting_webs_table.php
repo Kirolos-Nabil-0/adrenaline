@@ -35,13 +35,6 @@ return new class extends Migration
             $table->string('licance_web')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('banner')->nullable();
-            $table->string('telegram')->nullable();
-            $table->boolean('is_debug_2')->nullable()->default(false);
-            $table->boolean('is_debug_3')->nullable()->default(false);
-            $table->boolean('is_debug_4')->nullable()->default(false);
-            $table->boolean('is_debug_5')->nullable()->default(false);
-            $table->boolean('is_debug_6')->nullable()->default(false);
-            $table->boolean('is_debug_7')->nullable()->default(false);
             $table->timestamps();
         });
     }

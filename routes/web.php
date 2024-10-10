@@ -48,6 +48,7 @@ Route::controller(SettingWebController::class)->group(function () {
     Route::get('/success', 'order_success')->name('web.order_success');
     Route::get('/failed', 'order_failed')->name('web.order_failed');
 });
+
 Route::controller(PayPalController::class)->group(function () {
     Route::get('/payments/payWithPaymob',  'payWithPaymob')->name('payment-payWithPaymob');
     Route::get('/payment/verify',  'verifyWithPaymob')->name('verify-payment');
@@ -70,6 +71,7 @@ Route::controller(PayPalController::class)->group(function () {
         'initiateRefund'
     );
 });
+
 Route::controller(BannerController::class)->group(function () {
     Route::get('/banners', 'index')->name('banners');
     // Route::get('/coupons/create', 'create')->name('coupons.create');
@@ -86,8 +88,6 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
     Route::get('/myCourses', [MyCoursesController::class, 'courses'])->name('own-courses');
     Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-
-
     Route::get('course-view/{course_id}', [UserController::class, 'courseView']);
 
     Route::controller(UniversityController::class)->group(function () {
@@ -97,6 +97,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('/university/update', 'update')->name('university.update');
         Route::post('/university/destroy', 'destroy')->name('university.destroy');
     });
+
     Route::controller(CollegeController::class)->group(function () {
         Route::get('/college', 'index')->name('college');
         Route::get('/college/create', 'create')->name('college.create');
@@ -105,6 +106,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('/college/destroy', 'destroy')->name('college.destroy');
         Route::post('/college/update-status', 'updateStatusBanner')->name('college.update-status');
     });
+
     Route::controller(CourseCodeController::class)->group(function () {
         Route::get('/course_codes', 'index')->name('course_codes');
         Route::get('/course_codes/create', 'create')->name('course_codes.create');
@@ -113,6 +115,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('/course_codes/destroy', 'destroy')->name('course_codes.destroy');
         Route::post('/course_codes/destroyGroup', 'destroyGroup')->name('course_codes.destroyGroup');
     });
+
     Route::controller(ReviewAppController::class)->group(function () {
         Route::get('/reviewCoureses', 'index')->name('reviewCoureses');
         Route::get('/reviewCoureses/create', 'create')->name('reviewCoureses.create');
@@ -120,6 +123,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('/reviewCoureses/update', 'update')->name('reviewCoureses.update');
         Route::post('/reviewCoureses/destroy', 'destroy')->name('reviewCoureses.destroy');
     });
+
     Route::controller(CollegeYearController::class)->group(function () {
         Route::get('/collegeyear', 'index')->name('collegeyear');
         Route::get('/collegeyear/byid', 'collegeById')->name('collegeyear.byid');
@@ -129,6 +133,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('/collegeyear/update', 'update')->name('collegeyear.update');
         Route::post('/collegeyear/destroy', 'destroy')->name('collegeyear.destroy');
     });
+
     Route::controller(SemesterController::class)->group(function () {
         Route::get('/semester', 'index')->name('semester');
         Route::get('/semester/create', 'create')->name('semester.create');
@@ -136,8 +141,6 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('/semester/update', 'update')->name('semester.update');
         Route::post('/semester/destroy', 'destroy')->name('semester.destroy');
     });
-
-
 
     Route::get('course-page/{id}', [UserController::class, 'coursePage'])->name('course-page');
     Route::get('settings', [AdminController::class, 'settings'])->name('settings');
@@ -157,6 +160,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('delete-section/{id}', [ManageCoursesController::class, 'deleteSection'])->name('delete-section');
         Route::post('delete-lesson/{id}', [ManageCoursesController::class, 'deleteLesson'])->name('delete-lesson');
         Route::post('update-section/{id}', [ManageCoursesController::class, 'updateSection'])->name('update-section');
+        Route::get('edit-lesson/{id}', [ManageCoursesController::class, 'editLesson'])->name('edit-lesson');
         Route::post('update-lesson/{id}', [ManageCoursesController::class, 'updateLesson'])->name('update-lesson');
         Route::post('archiveCourse', [ManageCoursesController::class, 'archiveCourse'])->name('archiveCourse');
         Route::post('changeModulePrice', [ModuleController::class, 'changeModulePrice'])->name('changeModulePrice');
@@ -164,26 +168,37 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::get('/rateCourse/{course_id}/{rate}', [ManageCoursesController::class, 'rateCourse'])->name('rateCourse');
         Route::post('add_auth_user', [ModuleController::class, 'add_auth_user'])->name('add_auth_user');
         Route::post('delete_auth_user', [ModuleController::class, 'delete_auth_user'])->name('delete_auth_user');
-
-        Route::group(['middleware' => ['auth', 'admin']], function () {
-            Route::resource('module', ModuleController::class);
-            Route::get('enrollment-history', [AdminController::class, 'historyEnroll'])->name('enrollment-history');
-            Route::get('add-student', [AdminController::class, 'addStudent'])->name('add-student');
-            Route::post('enrollment', [AdminController::class, 'enrollmentStudent'])->name('enrollment');
-            Route::get('delete-user/{id}', [AdminController::class, 'deleteUserCourse'])->name('delete-user');
-            Route::get('edit-status/{id}', [AdminController::class, 'changeStatus'])->name('edit-status');
-            Route::get('instructors', [InsController::class, 'index'])->name('instructors');
-            Route::post('update_user_role', [InsController::class, 'update_user_role'])->name('update_user_role');
-            Route::post('remove_user', [InsController::class, 'remove_user'])->name('remove_user');
-            Route::post('linkCourseModule', [ManageCoursesController::class, 'linkCourseModule'])->name('linkCourseModule');
-            Route::get('deleteCourse/{id}', [ManageCoursesController::class, 'deleteCourse'])->name('deleteCourse');
-            Route::get('deleteModule/{id}', [ModuleController::class, 'deleteModule'])->name('deleteModule');
-            Route::post('archiveModule', [ModuleController::class, 'archiveModule'])->name('archiveModule');
-            Route::get('orderLesons', [ManageCoursesController::class, 'orderLesons']);
-        });
-        Route::group(['middleware' => ['auth', 'instructor']], function () {
-            //        Route::get('settings', [AdminController::class, 'settings'])->name('settings');
-        });
-        Route::get('logout' , [AuthenticatedSessionController::class , 'destroy'])->name('global_logout');
+        
+    Route::group(['middleware' => ['auth', 'admin']], function () {
+        // routes for admin only
+        Route::resource('module', ModuleController::class);
+        Route::get('enrollment-history', [AdminController::class, 'historyEnroll'])->name('enrollment-history');
+        Route::get('add-student', [AdminController::class, 'addStudent'])->name('add-student');
+        Route::post('enrollment', [AdminController::class, 'enrollmentStudent'])->name('enrollment');
+        Route::get('delete-user/{id}', [AdminController::class, 'deleteUserCourse'])->name('delete-user');
+        Route::get('edit-status/{id}', [AdminController::class, 'changeStatus'])->name('edit-status');
+        Route::get('instructors', [InsController::class, 'index'])->name('instructors');
+        Route::post('update_user_role', [InsController::class, 'update_user_role'])->name('update_user_role');
+        Route::post('remove_user', [InsController::class, 'remove_user'])->name('remove_user');
+        Route::post('linkCourseModule', [ManageCoursesController::class, 'linkCourseModule'])->name('linkCourseModule');
+        Route::get('deleteCourse/{id}', [ManageCoursesController::class, 'deleteCourse'])->name('deleteCourse');
+        Route::get('deleteModule/{id}', [ModuleController::class, 'deleteModule'])->name('deleteModule');
+        Route::post('archiveModule', [ModuleController::class, 'archiveModule'])->name('archiveModule');
+        Route::get('orderLesons', [ManageCoursesController::class, 'orderLesons']);
     });
+
+    });
+
+    Route::group(['middleware' => ['auth', 'admin']], function () {
+        // routes for admin & center
+    });
+
+
+    Route::group(['middleware' => ['auth', 'instructor']], function () {
+        // routes for instructor only
+    });
+    Route::group(['middleware' => ['auth', 'center']], function () {
+        // routes for center only
+    });
+    Route::get('logout' , [AuthenticatedSessionController::class , 'destroy'])->name('global_logout');
 });

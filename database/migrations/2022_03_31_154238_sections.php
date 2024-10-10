@@ -18,8 +18,6 @@ class Sections extends Migration
             $table->id();
             $table->string('section_name')->nullable();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            
-            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }
