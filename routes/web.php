@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CenterController;
 use App\Http\Controllers\InsController;
 use App\Http\Controllers\ManageCoursesController;
 use App\Http\Controllers\ModuleController;
@@ -169,6 +170,14 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('add_auth_user', [ModuleController::class, 'add_auth_user'])->name('add_auth_user');
         Route::post('delete_auth_user', [ModuleController::class, 'delete_auth_user'])->name('delete_auth_user');
         
+    Route::group(['middleware' => ['auth', 'adminorcenter']], function () {
+        // routes for admin or center
+        Route::get('instructors', [InsController::class, 'index'])->name('instructors');
+        Route::get('instructors/create', [InsController::class, 'create'])->name('instructors.create');
+        Route::post('instructors', [InsController::class, 'store'])->name('instructors.store');
+        Route::post('remove_user', [InsController::class, 'remove_user'])->name('remove_user');
+    });
+        
     Route::group(['middleware' => ['auth', 'admin']], function () {
         // routes for admin only
         Route::resource('module', ModuleController::class);
@@ -177,9 +186,10 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('enrollment', [AdminController::class, 'enrollmentStudent'])->name('enrollment');
         Route::get('delete-user/{id}', [AdminController::class, 'deleteUserCourse'])->name('delete-user');
         Route::get('edit-status/{id}', [AdminController::class, 'changeStatus'])->name('edit-status');
-        Route::get('instructors', [InsController::class, 'index'])->name('instructors');
+        Route::get('centers', [CenterController::class, 'index'])->name('centers');
+        Route::get('centers/create', [CenterController::class, 'create'])->name('centers.create');
+        Route::post('centers', [CenterController::class, 'store'])->name('centers.store');
         Route::post('update_user_role', [InsController::class, 'update_user_role'])->name('update_user_role');
-        Route::post('remove_user', [InsController::class, 'remove_user'])->name('remove_user');
         Route::post('linkCourseModule', [ManageCoursesController::class, 'linkCourseModule'])->name('linkCourseModule');
         Route::get('deleteCourse/{id}', [ManageCoursesController::class, 'deleteCourse'])->name('deleteCourse');
         Route::get('deleteModule/{id}', [ModuleController::class, 'deleteModule'])->name('deleteModule');
@@ -198,7 +208,9 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         // routes for instructor only
     });
     Route::group(['middleware' => ['auth', 'center']], function () {
-        // routes for center only
+        Route::get('test-center', function(){
+            return "this is the center auth";
+        });
     });
     Route::get('logout' , [AuthenticatedSessionController::class , 'destroy'])->name('global_logout');
 });

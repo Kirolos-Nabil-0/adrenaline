@@ -19,7 +19,7 @@ class IpMiddleware
     {
         $currentUser = Auth::user();
         if ($currentUser) {
-            if ($currentUser->role == 'admin'||$currentUser->role == 'instructor') {
+            if ($currentUser->role == 'admin'||$currentUser->role == 'instructor' || $currentUser->role=='center') {
                 return $next($request);
             } else {
 //                $ip = $_SERVER['REMOTE_ADDR'];

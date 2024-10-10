@@ -4,8 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class Dashboard
+class CheckAdminOrCenter
 {
     /**
      * Handle an incoming request.
@@ -18,7 +19,7 @@ class Dashboard
     {
         $user = auth()->user();
         if($user){
-            if($user->role=="instructor" || $user->role=="admin" || $user->role == "center"){
+            if($user->role=="admin" || $user->role == "center"){
                 return $next($request);
             }else{
                 return redirect()->route('home');

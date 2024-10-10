@@ -50,10 +50,14 @@ class BannerController extends Controller
 
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        $file_extension = $request->image->getClientOriginalExtension();
-        $file_name = time() . '.' . $file_extension;
-        $path = 'images/courses';
-        $request->image->move($path, $file_name);
+        if($request->hasFile('image')){
+            $file_extension = $request->image->getClientOriginalExtension();
+            $file_name = time() . '.' . $file_extension;
+            $path = 'images/courses';
+            $request->image->move($path, $file_name);
+        }else{
+            $file_name = null;
+        }
         $banner = new Banner;
         // $banner->name_en = $request->input('name_en');
         $banner->name = $request->input('name');

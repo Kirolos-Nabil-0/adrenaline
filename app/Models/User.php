@@ -27,7 +27,20 @@ class User extends Authenticatable
      *
      * @var string[]
      */
-    protected $fillable = ['firstname', 'lastname', 'email', 'title', 'password', 'browser_token', 'profile_photo_path', 'device_token', 'country', 'email_verified_at'];
+    protected $fillable = [
+        'firstname', 
+        'lastname', 
+        'email', 
+        'title', 
+        'password', 
+        'browser_token', 
+        'profile_photo_path', 
+        'device_token', 
+        'country', 
+        'email_verified_at', 
+        'role',
+        'center_id'
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -115,5 +128,13 @@ class User extends Authenticatable
         } else {
             return  asset('images/logo.png');
         }
+    }
+
+    public function center(){
+        return $this->belongsTo(User::class, 'center_id');
+    }
+
+    public function instructors(){
+        return $this->hasMany(User::class, 'center_id');
     }
 }

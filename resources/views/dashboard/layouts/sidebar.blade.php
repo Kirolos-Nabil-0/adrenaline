@@ -136,23 +136,23 @@ $currentUser = auth()->user();
             </li> -->
             <li class="side-item side-item-category">General</li>
 
-            <li class="slide">
-                <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}"><svg
+            @admin
+                <li class="slide">
+                    <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}"><svg
                         xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24">
                         <path d="M0 0h24v24H0V0z" fill="none" />
                         <path d="M19 5H5v14h14V5zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" opacity=".3" />
                         <path
                             d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm2 0h14v14H5V5zm2 5h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z" />
                     </svg><span class="side-menu__label">Manage</span><i class="angle fe fe-chevron-down"></i></a>
-                @admin
                     <ul class="slide-menu">
                         <li><a class="slide-item" href="{{ route('university') }}">Manage University</a></li>
                         <li><a class="slide-item" href="{{ route('college') }}">Manage college</a></li>
                         <li><a class="slide-item" href="{{ route('collegeyear') }}">Manage college Year</a></li>
                         {{-- <li><a class="slide-item" href="{{ route('semester') }}">Manage Semester</a></li> --}}
                     </ul>
+                </li>
                 @endadmin
-            </li>
 
 
 
@@ -183,7 +183,6 @@ $currentUser = auth()->user();
 
                 </ul>
             </li>
-            @admin
                 <!-- <li class="side-item side-item-category">General</li>
                                     <li class="slide">
                                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}"><svg
@@ -199,17 +198,45 @@ $currentUser = auth()->user();
                                             <li><a class="slide-item" href="{{ route('enrollment-history') }}">Enrollment History</a></li>
                                         </ul>
                                     </li> -->
-                <li class="side-item side-item-category">General</li>
+
+                <li class="side-item side-item-category">User Management</li>
+                @centeradmin
                 <li class="slide">
-                    <a class="side-menu__item" href="{{ route('instructors') }}"><svg xmlns="http://www.w3.org/2000/svg"
-                            class="side-menu__icon" viewBox="0 0 24 24">
-                            <path d="M0 0h24v24H0V0z" fill="none" />
-                            <path d="M5 5h4v6H5zm10 8h4v6h-4zM5 17h4v2H5zM15 5h4v2h-4z" opacity=".3" />
-                            <path
-                                d="M3 13h8V3H3v10zm2-8h4v6H5V5zm8 16h8V11h-8v10zm2-8h4v6h-4v-6zM13 3v6h8V3h-8zm6 4h-4V5h4v2zM3 21h8v-6H3v6zm2-4h4v2H5v-2z" />
-                        </svg><span class="side-menu__label">Instuctors</span><span
-                            class="badge badge-success side-badge">1</span></a>
+                    <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="side-menu__icon"
+                            viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5zm-2 3h4l1-4h-6l1 4zm1-10v2h2v-2h-2z"/>
+                        </svg>
+                        <span class="side-menu__label">Instructors</span><i class="angle fe fe-chevron-down"></i>
+                    </a>
+                    <ul class="slide-menu">
+                        <li><a class="slide-item" href="{{ route('instructors') }}">All Instructors</a></li>
+                        <li><a class="slide-item" href="{{ route('instructors.create') }}">Add new Instructor</a></li>
+                    </ul>
                 </li>
+                @endcenteradmin
+                @admin
+                    <li class="slide">
+                        <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="side-menu__icon"
+                                viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path d="M3 21h18V9H3v12zm2-10h4v4H5v-4zm0 5h4v2H5v-2zm5-5h4v4h-4v-4zm0 5h4v2h-4v-2zm5-10h4v10h-4V6zm0 11h4v2h-4v-2zM5 6h4v2H5V6zm0 11h4v2H5v-2zm-2-15h18c1.1 0 2 .9 2 2v18H1V4c0-1.1.9-2 2-2z"/>
+                            </svg>
+
+                            <span class="side-menu__label">Centers</span><i class="angle fe fe-chevron-down"></i>
+                        </a>
+                        <ul class="slide-menu">
+                            <li><a class="slide-item" href="{{ route('centers') }}">All Centers</a></li>
+                            <li><a class="slide-item" href="{{ route('centers.create') }}">Add new Center</a></li>
+                        </ul>
+                    </li>
+                @endadmin
                 <!-- <li class="side-item side-item-category">General</li> -->
                 <!-- <li class="slide">
                                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}"><svg
@@ -225,7 +252,6 @@ $currentUser = auth()->user();
                                             <li><a class="slide-item" href="{{ route('module.create') }}">Add New Module</a></li>
                                         </ul>
                                     </li> -->
-            @endadmin
         </ul>
     </div>
 </aside>

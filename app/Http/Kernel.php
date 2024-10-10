@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'instructor' => \App\Http\Middleware\Instructor::class,
         'center' => \App\Http\Middleware\Center::class,
         'dashboard' => \App\Http\Middleware\Dashboard::class,
+        'adminorcenter' => \App\Http\Middleware\CheckAdminOrCenter::class,
     ];
 }

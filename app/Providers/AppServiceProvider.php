@@ -38,7 +38,11 @@ class AppServiceProvider extends ServiceProvider
         });
         Blade::if('dashboard',function(){
             $user=auth()->user();
-            return $user&&($user->role=='instructor'||$user->role=='admin');
+            return $user&&($user->role=='instructor'||$user->role=='admin'||$user->role=='center');
+        });
+        Blade::if('centeradmin',function(){
+            $user=auth()->user();
+            return $user&&($user->role=='admin'||$user->role=='center');
         });
     }
 }
