@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\College;
 use App\Models\CourseCode;
 use App\Models\User;
-use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\Courses;
 use App\Models\Section;
@@ -22,46 +21,65 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $num = 4;
         $user = auth()->user();
 
+        // Get all counts only once
+        $universitiesCount = University::count();
+        $collegesCount = College::count();
+
+        // Initialize common variables
+        $coursesCount = 0;
+        $lessonsCount = 0;
+        $enrollmentCount = 0;
+        $sectionsCount = 0;
+        $usersCount = 0;
+        $instructorsCount = 0;
+        $centersCount = 0;
+        $codesCount = 0;
+
+        // Logic based on user role
         if ($user->role == 'admin') {
-            $num = 3;
-            $courses = count(Courses::all());
-            $lessons = count(Lesson::all());
-            $enroll = count(CourseCode::where('is_used', true)->get());
-            $users = count(User::whereNull('role')->get());
+            // Admin can see all courses and instructors
+            $courses = Courses::withCount('lessons')->get();
+            $coursesCount = $courses->count();
+            $lessonsCount = $courses->sum('lessons_count');
+            $instructorsCount = User::where('role', 'instructor')->count();
+            $enrollmentCount = CourseCode::where('is_used', true)->count();
+            $usersCount = User::whereNull('role')->count();
+            $sectionsCount = Section::count();
+            $centersCount = User::where('role', 'cetner')->count();
+            $codesCount = CourseCode::count();
+        } elseif ($user->role == 'instructor') {
+            // Instructor can see their own courses
+            $courses = Courses::where('created_by', $user->id)->withCount('lessons')->get();
+            $coursesCount = $courses->count();
+            $lessonsCount = $courses->sum('lessons_count');
+            $enrollmentCount = CourseCode::where('is_used', true)->whereIn('course_id', $courses->pluck('id'))->count();
+            $sectionsCount = $courses->sum(function ($course) {
+                return $course->section()->count();
+            });
+        } elseif ($user->role == 'center') {
+            // Center can see its courses and those of associated instructors
+            $instructors = User::where('role', 'instructor')->where('center_id', $user->id)->get();
+            $instructorIds = $instructors->pluck('id');
 
+            $courses = Courses::where('created_by', $user->id)
+                ->orWhereIn('created_by', $instructorIds)
+                ->withCount('lessons')
+                ->get();
 
-            $universitys = count(University::all());
-            $section = count(Section::all());
-            $codes = count(CourseCode::all());
-            $colleges = count(College::all());
-        } else {
-            $c = Courses::where('created_by', $user->id)->withCount('lessons')->get();
-            $ids = $c->pluck('id');
-            $users = 0;
-            $lcounter = 0;
-            $section = 0;
-            // return $c;
-            foreach ($c as $i) {
-                $lcounter += $i->lessons_count;
-                $users += $i->users()->count();
-                $section += $i->section()->count();
-                // return $users;
-            }
-            $universitys = count(University::all());
-            $codes = count(CourseCode::all());
-            $colleges = count(College::all());
-            $courses = count($c);
-            $lessons = $lcounter;
-
-            $enroll = count(CourseCode::where('is_used', true)->whereIn('course_id', $ids)->get());
-            // $users = count(User::whereNull('role')->get());
-            // return $enroll;
-            $enroll = null;
+            $coursesCount = $courses->count();
+            $lessonsCount = $courses->sum('lessons_count');
+            $sectionsCount = $courses->sum(function ($course) {
+                return $course->section()->count();
+            });
+            $instructorsCount = $instructors->count();
+            $enrollmentCount = CourseCode::where('is_used', true)
+                ->whereIn('course_id', $courses->pluck('id'))
+                ->count();
+            $codesCount = CourseCode::whereIn('course_id', $courses->pluck('id'))
+                ->count();
         }
-
 
         $oneYearAgo = now()->subYear()->startOfDay(); // Adjust for a year
         $statistics = DB::table('payments')
@@ -139,7 +157,8 @@ class AdminController extends Controller
         }
 
 
-        return view('dashboard.home-dashboard', compact('courses', 'lessons', 'enroll', 'users', 'num', 'universitys', 'section', 'codes', 'colleges', 'monthNames', 'totalSales', 'colors', 'monthNamesIns', 'totalSalesIns', 'colorsIns'));
+        return view('dashboard.home-dashboard', compact('coursesCount', 'lessonsCount', 'enrollmentCount', 'usersCount', 'universitiesCount', 'sectionsCount', 'codesCount', 'collegesCount', 'monthNames', 'totalSales', 'colors', 'monthNamesIns', 'totalSalesIns', 'colorsIns', 'instructorsCount', 'centersCount'));
+        // return view('dashboard.home-dashboard', compact('courses', 'lessons', 'enroll', 'users', 'num', 'universitys', 'section', 'codes', 'colleges', 'monthNames', 'totalSales', 'colors', 'monthNamesIns', 'totalSalesIns', 'colorsIns', 'instructors'));
     }
 
     public static function isAdmin()

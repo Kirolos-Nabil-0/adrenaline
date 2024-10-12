@@ -78,16 +78,16 @@ $currentUser = auth()->user();
 <!-- main-sidebar -->
 <aside class="app-sidebar sidebar-scroll">
     <div class="main-sidebar-header active">
-        <a class="desktop-logo logo-light active" href="{{ url('/' . ($page = 'index')) }}"><img
+        <a class="desktop-logo logo-light active" href="{{ url('/admin') }}"><img
                 src="{{ asset($currentUser->profile_photo_path ?? 'images/1.png') }}" class="main-logo rounded-circle"
                 alt="logo"></a>
-        <a class="desktop-logo logo-dark active" href="{{ url('/' . ($page = 'index')) }}"><img
+        <a class="desktop-logo logo-dark active" href="{{ url('/admin') }}"><img
                 src="{{ asset($currentUser->profile_photo_path ?? 'images/1.png') }}"
                 class="main-logo rounded-circle dark-theme" alt="logo"></a>
-        <a class="logo-icon mobile-logo icon-light active" href="{{ url('/' . ($page = 'index')) }}"><img
+        <a class="logo-icon mobile-logo icon-light active" href="{{ url('/admin') }}"><img
                 src="{{ asset($currentUser->profile_photo_path ?? 'images/1.png') }}" class="logo-icon rounded-circle"
                 alt="logo"></a>
-        <a class="logo-icon mobile-logo icon-dark active" href="{{ url('/' . ($page = 'index')) }}"><img
+        <a class="logo-icon mobile-logo icon-dark active" href="{{ url('/admin') }}"><img
                 src="{{ asset($currentUser->profile_photo_path ?? 'images/1.png') }}"
                 class="logo-icon dark-theme rounded-circle" alt="logo"></a>
     </div>
@@ -102,7 +102,7 @@ $currentUser = auth()->user();
                 <div class="user-info">
                     <h4 class="font-weight-semibold mt-3 mb-0">{{ $currentUser->firstname ?? '' }}
                         {{ $currentUser->lastname }}</h4>
-                    <span class="mb-0 text-muted">Premium Member</span>
+                    <span class="mb-0 text-muted text-uppercase">{{ $currentUser->role }}</span>
                 </div>
             </div>
         </div>
@@ -115,8 +115,7 @@ $currentUser = auth()->user();
                         <path d="M5 5h4v6H5zm10 8h4v6h-4zM5 17h4v2H5zM15 5h4v2h-4z" opacity=".3" />
                         <path
                             d="M3 13h8V3H3v10zm2-8h4v6H5V5zm8 16h8V11h-8v10zm2-8h4v6h-4v-6zM13 3v6h8V3h-8zm6 4h-4V5h4v2zM3 21h8v-6H3v6zm2-4h4v2H5v-2z" />
-                    </svg><span class="side-menu__label">Index</span><span
-                        class="badge badge-success side-badge">1</span></a>
+                    </svg><span class="side-menu__label">Index</span></a>
             </li>
 
             <!-- <li class="slide">
@@ -170,8 +169,11 @@ $currentUser = auth()->user();
 
                     <li><a class="slide-item" href="{{ route('add-course') }}">Add New Course</a></li>
                     <li><a class="slide-item" href="{{ route('courses-page') }}">Manage Courses</a></li>
-                    @admin
+
+                    @centeradmin
                         <li><a class="slide-item" href="{{ route('course_codes') }}">Manage Courses Codes</a></li>
+                    @endcenteradmin
+                    @admin
                         <li><a class="slide-item" href="{{ route('banners') }}">Manage Banners</a></li>
                         <li><a class="slide-item" href="{{ route('reviewCoureses') }}">Manage Rating</a></li>
                         <li><a class="slide-item" href="{{ route('setting_web') }}"> Manage Pages
@@ -199,8 +201,8 @@ $currentUser = auth()->user();
                                         </ul>
                                     </li> -->
 
-                <li class="side-item side-item-category">User Management</li>
                 @centeradmin
+                <li class="side-item side-item-category">User Management</li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}">
                         <svg

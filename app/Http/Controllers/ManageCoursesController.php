@@ -33,21 +33,60 @@ class ManageCoursesController extends Controller
 
             if ($user->role == "instructor") {
                 if ($showing_archived == 'all') {
-                    $data = Courses::where('created_by', $user->id)->orWhereHas('authorized_users', function ($q) use ($user) {
-                        $q->where('user_id', $user->id);
-                    })->with('module')->get();
+                    $data = Courses::where('created_by', $user->id)
+                        ->orWhereHas('authorized_users', function ($q) use ($user) {
+                            $q->where('user_id', $user->id);
+                        })
+                        ->with('module')
+                        ->get();
                 } else {
-                    $data = Courses::where('is_archived', $showing_archived)->where('created_by', $user->id)->orWhereHas('authorized_users', function ($q) use ($user) {
-                        $q->where('user_id', $user->id);
-                    })->with('module')->get();
+                    $data = Courses::where('is_archived', $showing_archived)
+                        ->where('created_by', $user->id)
+                        ->orWhereHas('authorized_users', function ($q) use ($user) {
+                            $q->where('user_id', $user->id);
+                        })
+                        ->with('module')
+                        ->get();
                 }
-            } else {
+            } 
+            // Logic for center
+            elseif ($user->role == "center") {
+                if ($showing_archived == 'all') {
+                    $data = Courses::where('created_by', $user->id)
+                        ->orWhereIn('created_by', function($query) use ($user) {
+                            $query->select('id')
+                                ->from('users')
+                                ->where('role', 'instructor')
+                                ->where('center_id', $user->id);
+                        })
+                        ->with('module')
+                        ->get();
+                } else {
+                    $data = Courses::where('is_archived', $showing_archived)
+                        ->where(function ($query) use ($user) {
+                            $query->where('created_by', $user->id)
+                                ->orWhereIn('created_by', function($subQuery) use ($user) {
+                                    $subQuery->select('id')
+                                        ->from('users')
+                                        ->where('role', 'instructor')
+                                        ->where('center_id', $user->id);
+                                });
+                        })
+                        ->with('module')
+                        ->get();
+                }
+            } 
+            // Logic for admin
+            else {
                 if ($showing_archived == 'all') {
                     $data = Courses::with(['owner', 'module'])->get();
                 } else {
-                    $data = Courses::where('is_archived', $showing_archived)->with(['owner', 'module'])->get();
+                    $data = Courses::where('is_archived', $showing_archived)
+                        ->with(['owner', 'module'])
+                        ->get();
                 }
             }
+        
             return datatables()->of($data)->addIndexColumn()->make(true);
         }
         $modules = Module::where('is_archived', '0')->get();

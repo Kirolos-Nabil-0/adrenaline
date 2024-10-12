@@ -12,7 +12,7 @@
 @section('content-dashboard')
 
             <div class="d-flex mt-5">
-                <h4 class="content-title mb-0 my-auto">Manage</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/ Users</span>
+                <h4 class="content-title mb-0 my-auto">Manage</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/ Instructors</span>
             </div>
             <div class="page-details mt-3 bg-white main-shadow p-4">
                 @if(Session::has('success'))
@@ -27,7 +27,6 @@
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

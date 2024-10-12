@@ -85,9 +85,9 @@
                         @endif
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="videourl">Duration <span
+                        <label for="duration">Duration <span
                                 class="text-danger">*</span></label>
-                        <input type="text" name="duration" class="form-control"
+                        <input type="number" min="0" name="duration" class="form-control"
                             id="duration" placeholder="Duration"
                             value="{{ $les->duration }}">
                         @error('duration')

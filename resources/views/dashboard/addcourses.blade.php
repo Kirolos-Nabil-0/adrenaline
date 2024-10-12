@@ -113,11 +113,11 @@
                             name="price_en">
 
                         <label for="discount_ar">Discount (EGP)<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control numeric" id="discount_ar"
+                        <input type="number" min="0" class="form-control numeric" id="discount_ar"
                             placeholder="Enter Course Discount" name="discount_ar" min="0" max="100">
 
                         <label for="discount_en">Discount (USD)<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control numeric" id="discount_en"
+                        <input type="number" min="0" class="form-control numeric" id="discount_en"
                             placeholder="Enter Course Discount" name="discount_en" min="0" max="100">
 
 

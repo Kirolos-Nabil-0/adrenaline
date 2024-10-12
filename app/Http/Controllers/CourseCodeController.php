@@ -13,9 +13,27 @@ class CourseCodeController extends Controller
 {
     public function index()
     {
-        $course = Courses::all();
-        $courseCodes = CourseCode::all();
+        $user = auth()->user();
 
+        if ($user->role == 'admin') {
+            // Admin can see all courses and course codes
+            $course = Courses::all();
+            $courseCodes = CourseCode::all();
+        } elseif ($user->role == 'center') {
+            // Center can see its own courses and those created by associated instructors
+            $course = Courses::where('created_by', $user->id)
+                ->orWhereIn('created_by', function($query) use ($user) {
+                    $query->select('id')
+                        ->from('users')
+                        ->where('role', 'instructor')
+                        ->where('center_id', $user->id);
+                })
+                ->get();
+        
+            $courseCodes = CourseCode::whereIn('course_id', $course->pluck('id'))->get();
+        }
+        
+        // Return view with courses and course codes
         return view('dashboard.coursecode.index', compact('course', 'courseCodes'));
     }
 

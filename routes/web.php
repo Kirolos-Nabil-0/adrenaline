@@ -176,6 +176,15 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::get('instructors/create', [InsController::class, 'create'])->name('instructors.create');
         Route::post('instructors', [InsController::class, 'store'])->name('instructors.store');
         Route::post('remove_user', [InsController::class, 'remove_user'])->name('remove_user');
+
+        Route::controller(CourseCodeController::class)->group(function () {
+            Route::get('/course_codes', 'index')->name('course_codes');
+            Route::get('/course_codes/create', 'create')->name('course_codes.create');
+            Route::post('/course_codes/store', 'store')->name('course_codes.store');
+            Route::post('/course_codes/update', 'update')->name('course_codes.update');
+            Route::post('/course_codes/destroy', 'destroy')->name('course_codes.destroy');
+            Route::post('/course_codes/destroyGroup', 'destroyGroup')->name('course_codes.destroyGroup');
+        });
     });
         
     Route::group(['middleware' => ['auth', 'admin']], function () {

@@ -75,10 +75,11 @@ function onMultipleDelete() {
     }
 }
 function onDeleteAll(courseCodes) {
-    const convertedCodes = JSON.parse(courseCodes)
-    if(convertedCodes.length == 0){
-        toastr.error('No codes please add first', 'Error');
-        return
+    const convertedCodes = JSON.parse(courseCodes);
+    
+    if (convertedCodes.length === 0) {
+        toastr.error('No codes. Please add first.', 'Error');
+        return;
     }
 
     Swal.fire({
@@ -91,11 +92,12 @@ function onDeleteAll(courseCodes) {
         confirmButtonText: 'إزالة'
     }).then((result) => {
         if (result.isConfirmed) {
+            const codes = []; // Make sure to initialize codes here
+            convertedCodes.forEach(code => {
+                codes.push(code.id);
+            });
             
-            convertedCodes.forEach(code =>{
-                codes.push(code.id)
-            })
-            var data = {
+            const data = {
                 '_token': csrf_token,
                 'id': codes
             };
@@ -103,8 +105,7 @@ function onDeleteAll(courseCodes) {
             $.post(remove_code_group, data, function(response) {
                 if (response.success) {
                     toastr.success(response.message, 'Success');
-
-                    window.location.reload()
+                    window.location.reload();
                 } else {
                     toastr.error('An error occurred while deleting codes.', 'Error');
                 }
@@ -113,5 +114,4 @@ function onDeleteAll(courseCodes) {
             });
         }
     });
-  
 }

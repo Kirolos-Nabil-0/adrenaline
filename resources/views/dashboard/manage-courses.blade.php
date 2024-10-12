@@ -461,8 +461,8 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <label for="videourl">Duration <span class="text-danger">*</span></label>
-                                    <input type="text" name="duration" class="form-control" id="duration"
+                                    <label for="duration">Duration <span class="text-danger">*</span></label>
+                                    <input type="number" min="0" name="duration" class="form-control" id="duration"
                                         placeholder="Duration">
                                     @error('duration')
                                         <small class="form-text text-danger">{{ $message }}</small>
