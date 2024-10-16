@@ -490,7 +490,7 @@
     
     
                                         <input type="file" name="pdf_attach" class="custom-file-input" id="pdf_attach"
-                                            placeholder="pdf attach" accept="application/pdf">
+                                            placeholder="pdf attach" accept="application/pdf" >
                                         <label class="custom-file-label" for="pdf_attach">Choose file</label>
                                     </div>
                                     @error('pdf_attach')

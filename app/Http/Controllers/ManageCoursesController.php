@@ -293,7 +293,7 @@ class ManageCoursesController extends Controller
         // Validation rules
         $rules = [
             'lesson_name' => 'required',
-            'is_lecture_free' => 'boolean',  // Add validation for the checkbox
+            'is_lecture_free' => 'nullable|in:off,on',  // Add validation for the checkbox
             'video_type' => 'required|in:video_url,video_upload',
             'url' => 'required_if:video_type,video_url|nullable|url',
             'uploaded_video_path' => 'required_if:video_type,video_upload|nullable|string'
@@ -313,18 +313,17 @@ class ManageCoursesController extends Controller
             'url' => $request->input('url') ?? null,
             'duration' => $request->input('duration'),
             'mcq_url' => $request->input('mcq_url'),
-            'pdf_attach' => $request->input('pdf_attach'),
-            'is_lecture_free' => $request->input('is_lecture_free'),
+            'is_lecture_free' => $request->input('is_lecture_free') == 'on' ? true : false,
             'video' => $request->input('uploaded_video_path'),
         ];
 
     
         // Handle file upload if present
-        if ($request->pdf_attach) {
-            $file_extension = $request->pdf_attach->getClientOriginalExtension();
+        if ($request->hasFile('pdf_attach')) {
+            $file_extension = $request->file('pdf_attach')->getClientOriginalExtension();
             $file_name = time() . '.' . $file_extension;
             $path = 'uploaded/attachments';
-            $request->pdf_attach->move($path, $file_name);
+            $request->file('pdf_attach')->move($path, $file_name);
             $data['pdf_attach'] = $file_name;
         }
     
