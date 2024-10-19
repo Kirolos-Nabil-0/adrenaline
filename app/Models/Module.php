@@ -13,26 +13,21 @@ class Module extends Model
 
     protected $guarded = [];
 
-    public function courses()
-    {
+    public function courses(){
         return $this->hasMany(Courses::class)->with('authorized_users');
     }
-    public function owner()
-    {
+    public function owner(){
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function instructors_rel()
-    {
+    public function instructors_rel(){
         return $this->belongsToMany(User::class, 'courses', 'module_id', 'created_by');
     }
 
-    public function instructors()
-    {
+    public function instructors(){
         return $this->instructors_rel()->distinct();
     }
-    public function authorized_users()
-    {
+    public function authorized_users(){
         $course_users = $this->courses()->with('authorized_users')->get()->pluck('authorized_users')->toArray();
         $auth_users = [];
         foreach ($course_users as $course) {
@@ -65,8 +60,7 @@ class Module extends Model
         }
         return $users;
     }
-    protected function getImageAttribute($value)
-    {
+    protected function getImageAttribute($value){
         $path = '';
         if ($value) {
             if (str_contains($value, 'http://') || str_contains($value, 'https://')) {

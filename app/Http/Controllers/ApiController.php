@@ -19,7 +19,7 @@ class ApiController extends Controller
 {
     public function getInstructorsData()
     {
-        $data = User::whereNotNull('role')->has('owned_active_courses')->get();
+        $data = User::where('role', 'instructor')->has('owned_active_courses')->get();
         // foreach($data as $user){
         //     if(!$user->profile_photo_path){
         //         $user->profile_photo_path="images/logo.png";
@@ -28,6 +28,12 @@ class ApiController extends Controller
         $response = $data->toArray();
         return response($response, 200);
         // return response()->json(['message' => 'Success', "data" => $response, 'status_code' => 200,], 200);
+    }
+    public function getCentersData()
+    {
+        $data = User::where('role', 'center')->has('getCenterActiveCourses')->get();
+        $response = $data->toArray();
+        return response($response, 200);
     }
     public function getModulesData($ins_id)
     {
@@ -44,8 +50,7 @@ class ApiController extends Controller
         // return response()->json(['message' => 'Success', "data" => $response, 'status_code' => 200,], 200);
     }
 
-    public function getCoursesByInstructor($ins_id)
-    {
+    public function getCoursesByInstructor($ins_id){
         $data = Courses::where('is_archived', '0')->where('created_by', $ins_id)->has('section')->with('owner.instructorReviews')
             ->with('reviews')->withCount(['reviews as rate' => function ($query) {
                 $query->select(DB::raw('coalesce(round(avg(rating)),0)'));
@@ -56,8 +61,23 @@ class ApiController extends Controller
         // return response()->json(['message' => 'Success', "data" => $response, 'status_code' => 200,], 200);
     }
 
-    public function getCoursesByModule($module_id)
-    {
+    public function getCoursesByCenter(string $center_id){
+        
+        $instructorIds = User::where('role', 'instructor')->where('center_id', $center_id)->pluck('id');
+        $data = Courses::where('is_archived', '0')
+            ->where('created_by', $center_id)
+            ->orWhereIn('created_by', $instructorIds)
+            ->has('section')->with('owner.instructorReviews')
+            ->with('reviews')->withCount(['reviews as rate' => function ($query) {
+                $query->select(DB::raw('coalesce(round(avg(rating)),0)'));
+            }])->get();
+
+        $response = $data->toArray();
+        return response($response, 200);
+        // return response()->json(['message' => 'Success', "data" => $response, 'status_code' => 200,], 200);
+    }
+
+    public function getCoursesByModule($module_id){
         $data = Courses::where('is_archived', '0')->where('module_id', $module_id)->has('section')->with('owner.instructorReviews')
             ->with('reviews')->withCount(['reviews as rate' => function ($query) {
                 $query->select(DB::raw('coalesce(round(avg(rating)),0)'));
@@ -68,8 +88,7 @@ class ApiController extends Controller
         // return response()->json(['message' => 'Success', "data" => $response, 'status_code' => 200,], 200);
     }
 
-    public function getCoursesByInstructorModule($ins_id, $module_id)
-    {
+    public function getCoursesByInstructorModule($ins_id, $module_id){
         $data = Courses::where('is_archived', '0')->where('created_by', $ins_id)->where('module_id', $module_id)->has('section')->with('owner.instructorReviews')
             ->with('reviews')->withCount(['reviews as rate' => function ($query) {
                 $query->select(DB::raw('coalesce(round(avg(rating)),0)'));
@@ -80,8 +99,7 @@ class ApiController extends Controller
         // return response()->json(['message' => 'Success', "data" => $response, 'status_code' => 200,], 200);
     }
 
-    public function getModules()
-    {
+    public function getModules(){
         $user = auth()->user();
         $data = Module::where('is_archived', '0')->with('instructors')->has('instructors')->orderBy('updated_at', 'desc')->get();
         foreach ($data as $item) {
@@ -171,7 +189,7 @@ class ApiController extends Controller
     }
     public function getInstructors()
     {
-        $data = User::where('role', "instructor")->orWhere("role", "admin")
+        $data = User::where('role', "instructor")
             ->with(
                 [
                     'instructorReviews',
@@ -183,6 +201,31 @@ class ApiController extends Controller
             ->get();
         $response = $data->toArray();
         // return response($response, 200);
+        return response()->json(['message' => 'Success', "data" => $data, 'status_code' => 200,], 200);
+    }
+    public function getCenter($id)
+    {
+        $center = User::where('id', $id)->where('role', 'center')->first();
+        if($center){
+            $reviews = $center->instructorReviews();
+            $courses = $center->getCenterCourses();
+            $instructors = $center->instructors;
+            return response()->json([
+                'message' => 'Success',
+                'data' => array_merge($center->toArray(), [
+                    'courses' => $courses,
+                    'reviews' => $reviews,
+                    'instructors' => $instructors,
+                ]),
+                'status_code' => 200
+            ], 200);
+        }else{
+            return response()->json(['message' => 'Not Found', "data" => [], 'status_code' => 404,], 404);
+        }
+    }
+    public function getCenters()
+    {
+        $data = User::where('role', "center")->get();
         return response()->json(['message' => 'Success', "data" => $data, 'status_code' => 200,], 200);
     }
     public function getEnrolledCourses()

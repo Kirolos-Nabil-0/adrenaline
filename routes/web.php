@@ -18,6 +18,7 @@ use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\CoursesControllerView;
 
 use App\Http\Controllers\MyCoursesController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\ReviewAppController;
 use App\Http\Controllers\SearchController;
@@ -106,6 +107,17 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('/college/update', 'update')->name('college.update');
         Route::post('/college/destroy', 'destroy')->name('college.destroy');
         Route::post('/college/update-status', 'updateStatusBanner')->name('college.update-status');
+    });
+
+    Route::controller(PackageController::class)->group(function () {
+        Route::get('/packages', 'index')->name('packages.index');
+        Route::get('/packages/create', 'create')->name('packages.create');
+        Route::post('/packages/store', 'store')->name('packages.store');
+        Route::get('/packages/{package}', 'show')->name('packages.show');
+        Route::get('/packages/{package}/edit', 'edit')->name('packages.edit');
+        Route::patch('/packages/{package}', 'update')->name('packages.update');
+        Route::delete('/packages/{package}', 'destroy')->name('packages.destroy');
+        Route::post('/packages/update-status', 'updateStatusBanner')->name('packages.update-status');
     });
 
     Route::controller(CourseCodeController::class)->group(function () {

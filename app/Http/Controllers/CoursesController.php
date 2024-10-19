@@ -20,28 +20,27 @@ class CoursesController extends Controller
 
     public function store(Request $request)
     {
-
+        
         $price_free = 'required';
         if ($request->has('free')) {
             $price_free = '';
         }
         $rules = [
             'name' => 'required',
-            'description' => 'required',
+            'description' => 'nullable',
             'image' => 'required|image',
             'price_ar' => $price_free,
             'price_en' => $price_free,
         ];
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInputs($request->all());
+        $request->validate($rules);
+        
+        $file_name = '';
+        if($request->hasFile('image')){
+            $file_extension = $request->file('image')->getClientOriginalExtension();
+            $file_name = time() . '.' . $file_extension;
+            $path = 'images/courses';
+            $request->file('image')->move($path, $file_name);
         }
-
-        $file_extension = $request->image->getClientOriginalExtension();
-        $file_name = time() . '.' . $file_extension;
-        $path = 'images/courses';
-        $request->image->move($path, $file_name);
         $semester = new Semester();
         if ($request->type == "universities") {
             if ($request->semester == "1") {

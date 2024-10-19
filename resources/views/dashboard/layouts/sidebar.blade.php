@@ -148,6 +148,7 @@ $currentUser = auth()->user();
                         <li><a class="slide-item" href="{{ route('university') }}">Manage University</a></li>
                         <li><a class="slide-item" href="{{ route('college') }}">Manage college</a></li>
                         <li><a class="slide-item" href="{{ route('collegeyear') }}">Manage college Year</a></li>
+                        <li><a class="slide-item" href="{{ route('packages.index') }}">Manage Packages</a></li>
                         {{-- <li><a class="slide-item" href="{{ route('semester') }}">Manage Semester</a></li> --}}
                     </ul>
                 </li>

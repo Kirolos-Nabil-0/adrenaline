@@ -43,6 +43,8 @@ Route::post('/register', [ApiAuthController::class, 'register']);
 Route::post('get_youtube_qualities', [YoutubeController::class, 'get_youtube_qualities']);
 Route::get('/getInstructor/{id}', [ApiController::class, 'getInstructor']);
 Route::get('/getInstructors', [ApiController::class, 'getInstructors']);
+Route::get('/getCenter/{id}', [ApiController::class, 'getCenter']);
+Route::get('/getCenters', [ApiController::class, 'getCenters']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('getMyCourse', [UserController::class, 'getMyCourse'])->name('getMyCourse');
     Route::get('checkMyCourse/{id}', [UserController::class, 'checkMyCourse'])->name('checkMyCourse');
@@ -55,6 +57,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/getModulesData/{ins_id}', [ApiController::class, 'getModulesData']);
     Route::get('/getCoursesByInstructorModule/insId/{ins_id}/moduleId/{module_id}', [ApiController::class, 'getCoursesByInstructorModule']);
     Route::get('/getCoursesByInstructor/insId/{ins_id}', [ApiController::class, 'getCoursesByInstructor']);
+    Route::get('/getCoursesByCenter/centerId/{center_id}', [ApiController::class, 'getCoursesByCenter']);
     Route::get('/getCoursesByModule/moduleId/{module_id}', [ApiController::class, 'getCoursesByModule']);
     Route::get('/getModules', [ApiController::class, 'getModules']);
 
