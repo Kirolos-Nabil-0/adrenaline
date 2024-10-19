@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CenterResource;
 use App\Models\College;
 use App\Models\CourseCode;
 use App\Models\Courses;
@@ -206,17 +207,19 @@ class ApiController extends Controller
     public function getCenter($id)
     {
         $center = User::where('id', $id)->where('role', 'center')->first();
+        $center_resource = new CenterResource($center);
         if($center){
             $reviews = $center->instructorReviews();
             $courses = $center->getCenterCourses();
             $instructors = $center->instructors;
             return response()->json([
                 'message' => 'Success',
-                'data' => array_merge($center->toArray(), [
+                'data' => [
+                    "center" => $center_resource,
                     'courses' => $courses,
                     'reviews' => $reviews,
                     'instructors' => $instructors,
-                ]),
+                ],
                 'status_code' => 200
             ], 200);
         }else{
@@ -226,7 +229,7 @@ class ApiController extends Controller
     public function getCenters()
     {
         $data = User::where('role', "center")->get();
-        return response()->json(['message' => 'Success', "data" => $data, 'status_code' => 200,], 200);
+        return response()->json(['message' => 'Success', "data" => CenterResource::collection($data), 'status_code' => 200,], 200);
     }
     public function getEnrolledCourses()
     {
