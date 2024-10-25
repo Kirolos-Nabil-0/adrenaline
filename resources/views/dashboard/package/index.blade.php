@@ -1,24 +1,6 @@
 @extends('dashboard.layouts.layout')
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        /* CSS for image container */
-        .image-container {
-            width: 50px;
-            height: 50px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 50%;
-        }
-
-        /* CSS for the circular image */
-        .image-container img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
 @endsection
 
 @section('page-header')
@@ -34,44 +16,6 @@
     <!-- breadcrumb -->
 @endsection
 @section('content-dashboard')
-
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    @if (session()->has('Add'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>{{ session()->get('Add') }}</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if (session()->has('delete'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>{{ session()->get('delete') }}</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if (session()->has('edit'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>{{ session()->get('edit') }}</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
     <!-- row -->
     <div class="row">
         <div class="col-xl-12">

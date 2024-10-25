@@ -12,6 +12,7 @@ use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Courses;
 use App\Models\Module;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -84,7 +85,7 @@ class User extends Authenticatable
     }
 
     public function courses(){
-        return $this->belongsToMany('App\Models\Courses', 'user_courses', 'user_id', 'course_id', 'id', 'id')->withPivot('status');
+        return $this->belongsToMany(Courses::class, 'user_courses', 'user_id', 'course_id', 'id', 'id')->withPivot('status');
     }
 
     public function enrolled_courses(){
@@ -143,7 +144,7 @@ class User extends Authenticatable
             $instructorCourses = Courses::whereIn('created_by', $instructorIds)->get();
             return $centerCourses->merge($instructorCourses);
         }
-        return collect(); // Return an empty collection if not a center
+        return collect();
     }
 
     public function getCenterActiveCourses() {
@@ -153,12 +154,29 @@ class User extends Authenticatable
             $instructorCourses = Courses::whereIn('created_by', $instructorIds)->where('is_archived', '0')->get();
             return $centerCourses->merge($instructorCourses);
         }
-        return collect(); // Return an empty collection if not a center
+        return collect();
     }
 
     public function packages(){
         return $this->belongsToMany(Package::class)
-            ->withPivot('start_date', 'end_date')
-            ->withTimestamps();
+            ->withPivot('start_date', 'end_date', 'status')
+            ->withTimestamps()
+            ->latest();
+    }
+
+    public function currentPackage(){
+        return $this->packages()
+            ->where('status', true)
+            ->where('start_date', '<=', Carbon::now())
+            ->where('end_date', '>=', Carbon::now())
+            ->first();
+    }
+
+    public function currentDeactivePackage(){
+        return $this->packages()
+            ->where('status', false)
+            ->where('start_date', '<=', Carbon::now())
+            ->where('end_date', '>=', Carbon::now())
+            ->first();
     }
 }

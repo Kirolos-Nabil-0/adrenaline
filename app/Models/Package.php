@@ -25,7 +25,7 @@ class Package extends Model
 
     public function consumers(){
         return $this->belongsToMany(User::class)
-            ->withPivot('start_date', 'end_date')
+            ->withPivot('start_date', 'end_date', 'status')
             ->withTimestamps();
     }
 }

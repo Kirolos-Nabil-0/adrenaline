@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PackageController extends Controller{
@@ -85,7 +87,6 @@ class PackageController extends Controller{
     }
 
     public function edit(Package $package){
-
         return view('dashboard.package.edit', compact('package'));
     }
 
@@ -164,5 +165,16 @@ class PackageController extends Controller{
         $package->delete();
         session()->flash('Add', 'تم حذف الباكدج بنجاح ');
         return redirect()->back();
+    }
+
+    public function my_plan(){
+        $user = User::find(Auth::id());
+        if(!$user || !in_array($user->role, ['instructor', 'center']) || !$user->currentPackage()){
+            return redirect()->route("admin.dashboard");
+        }
+
+        $package = $user->currentPackage();
+        
+        return view("dashboard.package.my_plan", compact("package"));
     }
 }

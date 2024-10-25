@@ -40,117 +40,133 @@
                 {{ Session::get('success') }}
             </div>
         @endif
-        <form enctype="multipart/form-data" action="{{ route('create-course') }}" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            <div class="bg-white main-shadow p-4 border">
-                <h4 class="mb-4">Course Info</h4>
-                <div class="row">
-                    <div class="form-group col-lg-6">
-                        <label for="cortitle">Course title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="cortitle" name="name"
-                            placeholder="Enter Course Title" required>
-                        @error('name')
-                            <small class="form-text text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
 
-                    <div class="form-group col-lg-6">
-                        <label for="exampleInputEmail1">Course Type</label>
-                        <select id="type" name="type" class="form-control SlectBox" required
-                            onchange="toggleFields()">
-                            <option value="universities" selected>Universities Courses</option>
-                            <option value="public">General Courses</option>
-                            <option value="high_school">Course High School</option>
-                            <option value="public_medicine">General medicine Courses</option>
-                        </select>
-                    </div>
+        @if (Session::has('warning'))
+            <div class="alert alert-warning" role="alert">
+                {{ Session::get('warning') }}
+            </div>
+        @endif
+        @if (auth()->user()->role == 'admin' || ($current_package && $current_package->courses_limit > $courses_count))
+            <form enctype="multipart/form-data" action="{{ route('create-course') }}" method="POST"
+                enctype="multipart/form-data">
+                @csrf
+                <div class="bg-white main-shadow p-4 border">
+                    <h4 class="mb-4">Course Info</h4>
+                    <div class="row">
+                        <div class="form-group mb-3 col-lg-6">
+                            <label for="cortitle">Course title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="cortitle" name="name"
+                                placeholder="Enter Course Title" required>
+                            @error('name')
+                                <small class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
 
-                    <div class="form-group col-lg-6" id="universityField">
-                        <label for="exampleInputEmail1">University Name</label>
-                        <select id="university" name="university" class="form-control SlectBox">
-                            <option selected disabled>Select University</option>
-                            @php
-                                $i = 0;
-                            @endphp
-                            @foreach ($universities as $university)
+                        <div class="form-group mb-3 col-lg-6">
+                            <label for="exampleInputEmail1">Course Type</label>
+                            <select id="type" name="type" class="form-control SlectBox" required
+                                onchange="toggleFields()">
+                                <option value="universities" selected>Universities Courses</option>
+                                <option value="public">General Courses</option>
+                                <option value="high_school">Course High School</option>
+                                <option value="public_medicine">General medicine Courses</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3 col-lg-6" id="universityField">
+                            <label for="exampleInputEmail1">University Name</label>
+                            <select id="university" name="university" class="form-control SlectBox">
+                                <option selected disabled>Select University</option>
                                 @php
-                                    $i++;
+                                    $i = 0;
                                 @endphp
-                                <option value="{{$university->id}}">{{ $university->name }}</option>
-                            @endforeach
-                        </select>
+                                @foreach ($universities as $university)
+                                    @php
+                                        $i++;
+                                    @endphp
+                                    <option value="{{$university->id}}">{{ $university->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3 col-lg-6" id="collegeField">
+                            <label for="exampleInputEmail1">College Name</label>
+                            <select id="college_id" name="college_id" class="form-control SlectBox">
+                                <option value="">Select University first</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3 col-lg-6" id="collegeYearField">
+                            <label for="exampleInputEmail1">College year</label>
+                            <select id="college_year" name="college_year" class="form-control SlectBox">
+                                <option value="">College year</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3 col-lg-6" id="semesterField">
+                            <label for="exampleInputEmail1">Semester</label>
+                            <select id="semester" name="semester" class="form-control SlectBox">
+                                <option value="1" selected>First semester</option>
+                                <option value="2">Second semester</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3 col-lg-6">
+                            <label for="price_ar">Price (EGP)<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control numeric" id="price_ar" placeholder="Enter Course Price"
+                                name="price_ar">
+
+                            <label for="price_en">Price (USD)<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control numeric" id="price_en" placeholder="Enter Course Price"
+                                name="price_en">
+
+                            <label for="discount_ar">Discount (EGP)<span class="text-danger">*</span></label>
+                            <input type="number" min="0" class="form-control numeric" id="discount_ar"
+                                placeholder="Enter Course Discount" name="discount_ar" min="0" max="100">
+
+                            <label for="discount_en">Discount (USD)<span class="text-danger">*</span></label>
+                            <input type="number" min="0" class="form-control numeric" id="discount_en"
+                                placeholder="Enter Course Discount" name="discount_en" min="0" max="100">
+
+
+                            <label for="freecou" class="mt-3">Free</label>
+                            <input type="checkbox" name="free" id="freecou">
+                            @error('price')
+                                <small class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-3 col-lg-6">
+                            <label for="thumbnail">thumbnail <span class="text-danger">*</span></label>
+                            <input type="file" class="dropify" name="image" id="thumbnail" data-height="200"
+                                required />
+                            @error('image')
+                                <small class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-3 col-lg-12">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" cols="30" name="description" rows="10"></textarea>
+                            @error('description')
+                                <small class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
                     </div>
 
-                    <div class="form-group col-lg-6" id="collegeField">
-                        <label for="exampleInputEmail1">College Name</label>
-                        <select id="college_id" name="college_id" class="form-control SlectBox">
-                            <option value="">Select University first</option>
-                        </select>
-                    </div>
 
-                    <div class="form-group col-lg-6" id="collegeYearField">
-                        <label for="exampleInputEmail1">College year</label>
-                        <select id="college_year" name="college_year" class="form-control SlectBox">
-                            <option value="">College year</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-lg-6" id="semesterField">
-                        <label for="exampleInputEmail1">Semester</label>
-                        <select id="semester" name="semester" class="form-control SlectBox">
-                            <option value="1" selected>First semester</option>
-                            <option value="2">Second semester</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label for="price_ar">Price (EGP)<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control numeric" id="price_ar" placeholder="Enter Course Price"
-                            name="price_ar">
-
-                        <label for="price_en">Price (USD)<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control numeric" id="price_en" placeholder="Enter Course Price"
-                            name="price_en">
-
-                        <label for="discount_ar">Discount (EGP)<span class="text-danger">*</span></label>
-                        <input type="number" min="0" class="form-control numeric" id="discount_ar"
-                            placeholder="Enter Course Discount" name="discount_ar" min="0" max="100">
-
-                        <label for="discount_en">Discount (USD)<span class="text-danger">*</span></label>
-                        <input type="number" min="0" class="form-control numeric" id="discount_en"
-                            placeholder="Enter Course Discount" name="discount_en" min="0" max="100">
-
-
-                        <label for="freecou" class="mt-3">free <span class="text-danger">*</span></label>
-                        <input type="checkbox" name="free" id="freecou">
-                        @error('price')
-                            <small class="form-text text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label for="thumbnail">thumbnail <span class="text-danger">*</span></label>
-                        {{-- <input type="file" name="image" class="form-control" id="thumbnail"
-                                    placeholder="Enter Course Price" required> --}}
-                        <input type="file" class="dropify" name="image" id="thumbnail" data-height="200"
-                            required />
-                        @error('image')
-                            <small class="form-text text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label for="description">Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="description" cols="30" name="description" rows="10"></textarea>
-                        @error('description')
-                            <small class="form-text text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
+                    <button class="btn btn-primary w-100 mt-2 " type="submit">Add Course</button>
                 </div>
 
-
-                <button class="btn btn-primary w-100 mt-2 " type="submit">Add Course</button>
+            </form>
+        @elseif ($current_package && $current_package->courses_limit <= $courses_count)
+            <div class="alert alert-warning">
+                <h5>You have reached out the limit of courses for your plan which is <b>{{$current_package->courses_limit}} course</b>.</h5>
+                <h5>Please contact with the admin for more information.</h5>
             </div>
-
-        </form>
+        @else
+            <div class="alert alert-warning">
+                <h5>You don't have a plan that allows you to add courses.</h5>
+                <h5>Please contact with the admin for more information.</h5>
+            </div>
+        @endif
 
     </div>
 @endsection

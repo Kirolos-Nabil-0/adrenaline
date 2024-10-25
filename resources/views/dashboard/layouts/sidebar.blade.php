@@ -183,8 +183,25 @@ $currentUser = auth()->user();
 
 
 
-
                 </ul>
+                @centerinstructor
+                    @if (auth()->user()->currentPackage())
+                        <li class="slide">
+                            <a class="side-menu__item" href="{{ route('admin.my_plan') }}">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="side-menu__icon"
+                                    viewBox="0 0 24 24"
+                                    width="24"
+                                    height="24">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path d="M3 3h18v2H3zm0 6h18v2H3zm0 6h18v2H3z" opacity=".3" />
+                                    <path d="M3 3h18v2H3zm0 6h18v2H3zm0 6h18v2H3zM5 10l1.5 1.5L10 8l-1.5-1.5L5 10zM5 16l1.5 1.5L10 14l-1.5-1.5L5 16z" />
+                                </svg>
+                                <span class="side-menu__label">Your Plan</span></a>
+                        </li>
+                    @endif
+                @endcenterinstructor
             </li>
                 <!-- <li class="side-item side-item-category">General</li>
                                     <li class="slide">

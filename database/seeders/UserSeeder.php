@@ -24,23 +24,23 @@ class UserSeeder extends Seeder
                 'role' => 'admin'
             ],
             [
-                'firstname' => 'emailtest',
-                'lastname' => 'education',
-                'email' => 'tth31770@gmail.com',
+                'firstname' => 'Admin',
+                'lastname' => 'One',
+                'email' => 'admin@gmail.com',
                 'password' => Hash::make('12345678'),
                 'role' => 'admin'
             ],
             [
                 'firstname' => 'center',
                 'lastname' => 'one',
-                'email' => 'center1@gmail.com',
+                'email' => 'center@gmail.com',
                 'password' => Hash::make('12345678'),
                 'role' => 'center'
             ],
             [
                 'firstname' => 'instructor',
-                'lastname' => 'education',
-                'email' => 'taha@gmail.com',
+                'lastname' => 'one',
+                'email' => 'instructor@gmail.com',
                 'password' => Hash::make('12345678'),
                 'role' => 'instructor'
             ]

@@ -11,6 +11,7 @@ use App\Models\Courses;
 use App\Models\Section;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -132,9 +133,14 @@ class ManageCoursesController extends Controller
             $lessonsNumber += Lesson::where('section_id', $section->id)->count();
         }
 
-        $user = auth()->user();
+        $user = User::find(auth()->id());
         $courseId = Courses::findOrFail($course_id);
-        $users = User::where('role', 'instructor')->where('id', '<>', $user->id)->where('id', '<>', $courseId->created_by)->get();
+        $users = null;
+        if($user->role == 'admin'){
+            $users = User::where('role', 'instructor')->where('id', '<>', $user->id)->where('id', '<>', $courseId->created_by)->get();
+        }elseif($user->role == 'center'){
+            $users = $user->instructors;
+        }
         $selectedUsers = $courseId->authorized_users()->pluck('user_id')->toArray();
         $can_add_authorize = false;
         $oneYearAgo = now()->subYear()->startOfDay(); // Adjust for a year
@@ -174,19 +180,17 @@ class ManageCoursesController extends Controller
             $colors[] = '#' . substr(md5(rand()), 0, 6); // Generate a random color
         }
 
-
-
-
         if (($user->role == "instructor" && $user->id == $courseId->created_by) || ($user->role == "center" && $user->id == $courseId->created_by) || $user->role == "admin") {
             $can_add_authorize = true;
         }
         if ($user->role == "instructor" || $user->role == "admin" || $user->role == "center") {
             $authorized = CourseModifier::where('user_id', $user->id)->first();
             if ($user->id == $courseId->created_by || $authorized || $user->role == "admin") {
-
+                $current_package = $user->currentPackage();
+                $lessonsAvailable = $current_package ? $current_package->lessons_per_course_limit : null;
                 return  view(
                     'dashboard.manage-courses',
-                    compact('courseId', 'users', 'selectedUsers', 'can_add_authorize', 'numberStudent', 'lessonsNumber', 'sections', 'monthNames', 'totalSales', 'colors')
+                    compact('courseId', 'users', 'selectedUsers', 'can_add_authorize', 'numberStudent', 'lessonsNumber', 'lessonsAvailable', 'sections', 'monthNames', 'totalSales', 'colors', 'current_package')
                 );
             }
         } else {
@@ -219,7 +223,6 @@ class ManageCoursesController extends Controller
         }
         $rules = [
             'name' => 'required',
-            'description' => 'required',
             'image' => $image_require . 'image',
             'price_ar' => $price_free,
             'price_en' => $price_free,
@@ -296,7 +299,8 @@ class ManageCoursesController extends Controller
             'is_lecture_free' => 'nullable|in:off,on',  // Add validation for the checkbox
             'video_type' => 'required|in:video_url,video_upload',
             'url' => 'required_if:video_type,video_url|nullable|url',
-            'uploaded_video_path' => 'required_if:video_type,video_upload|nullable|string'
+            'uploaded_video_path' => 'required_if:video_type,video_upload|nullable|string',
+            'pdf_attach' => 'nullable|mimes:pdf'
         ];
     
         $validator = Validator::make($request->all(), $rules);
@@ -333,7 +337,7 @@ class ManageCoursesController extends Controller
         // Create a new lesson with the provided data
         Lesson::create($data);
     
-        return redirect()->back();
+        return redirect()->back()->with("success", 'Lesson creatd successfully');
     }
 
     //    Start delete and update section
@@ -412,7 +416,8 @@ class ManageCoursesController extends Controller
             'is_lecture_free' => 'boolean',  // Add validation for the checkbox
             'video_type' => 'required|in:video_url,video_upload',
             'url' => 'required_if:video_type,video_url|nullable|url',
-            'uploaded_video_path' => 'nullable|string'
+            'uploaded_video_path' => 'nullable|string',
+            'pdf_attach' => 'nullable|mimes:pdf'
         ];
     
         $validator = Validator::make($request->all(), $rules);
@@ -498,17 +503,27 @@ class ManageCoursesController extends Controller
 
     // In your Controller
     public function uploadLessonVideo(Request $request){
-        $request->validate([
-            'video' => 'required|file|mimes:mp4,mov,avi,wmv|max:512000', // Limit to 500 MB
-        ]);
+        $user = User::find(Auth::id());
+        $current_package = $user->currentPackage();
+        if($user->role == 'admin' || ($current_package && $current_package->video_support)){
+            $max_upload = 1024*1024* ($current_package->video_maximum ?? 500);
+            $validator = Validator::make($request->all(), [
+                'video' => 'required|file|mimes:mp4,mov,avi,wmv|max:'.$max_upload,
+            ]);
+            if($validator->fails()){
+                return response()->json(['error' => $validator->errors()], 422);
+            }
 
-        $videoFile = $request->file('video');
-        $videoName = Str::random(10) . '.' . $videoFile->getClientOriginalExtension();
-        $path = public_path('uploaded/videos');
-            
-        $videoFile->move($path, $videoName);
+            $videoFile = $request->file('video');
+            $videoName = Str::random(10) . '.' . $videoFile->getClientOriginalExtension();
+            $path = public_path('uploaded/videos');
+                
+            $videoFile->move($path, $videoName);
 
-        return response()->json(['video_path' => $videoName]);
+            return response()->json(['video_path' => $videoName]);
+        }else{
+            return response()->json(['error' => 'Your plan dose not have video support'], 422);
+        }
     }
 
 }

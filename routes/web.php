@@ -162,13 +162,17 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
 
     Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'dashboard']], function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+
+        // add course routes
         Route::get('add-courses', [CoursesController::class, 'index'])->name('add-course');
         Route::post('create-course', [CoursesController::class, 'store'])->name('create-course');
+
+        // course management routes
         Route::get('courses-page', [ManageCoursesController::class, 'index'])->name('courses-page');
         Route::get('edit-course/{course_id}', [ManageCoursesController::class, 'editCourse']);
         Route::post('course-update/{course_id}', [ManageCoursesController::class, 'update'])->name('course-update');
-        Route::post('create-section}', [ManageCoursesController::class, 'createSections'])->name('create-section');
-        Route::post('create-lesson}', [ManageCoursesController::class, 'createLessons'])->name('create-lesson');
+        Route::post('create-section', [ManageCoursesController::class, 'createSections'])->name('create-section');
+        Route::post('create-lesson', [ManageCoursesController::class, 'createLessons'])->name('create-lesson');
         Route::post('/upload-video', [ManageCoursesController::class, 'uploadLessonVideo'])->name('upload-lesson-video');
         Route::post('delete-section/{id}', [ManageCoursesController::class, 'deleteSection'])->name('delete-section');
         Route::post('delete-lesson/{id}', [ManageCoursesController::class, 'deleteLesson'])->name('delete-lesson');
@@ -187,6 +191,11 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::get('instructors', [InsController::class, 'index'])->name('instructors');
         Route::get('instructors/create', [InsController::class, 'create'])->name('instructors.create');
         Route::post('instructors', [InsController::class, 'store'])->name('instructors.store');
+        Route::get('instructors/{instructor}', [InsController::class, 'show'])->name('instructors.show');
+        Route::get('instructors/{instructor}/edit', [InsController::class, 'edit'])->name('instructors.edit');
+        Route::patch('instructors/{instructor}', [InsController::class, 'update'])->name('instructors.update');
+        Route::post('instructors/{instructor}/activate-package', [InsController::class, 'activatePackage'])->name('instructors.activate-package');
+        Route::post('instructors/{instructor}/deactivate-package', [InsController::class, 'deactivatePackage'])->name('instructors.deactivate-package');
         Route::post('remove_user', [InsController::class, 'remove_user'])->name('remove_user');
 
         Route::controller(CourseCodeController::class)->group(function () {
@@ -207,9 +216,17 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('enrollment', [AdminController::class, 'enrollmentStudent'])->name('enrollment');
         Route::get('delete-user/{id}', [AdminController::class, 'deleteUserCourse'])->name('delete-user');
         Route::get('edit-status/{id}', [AdminController::class, 'changeStatus'])->name('edit-status');
+
+        // center routes
         Route::get('centers', [CenterController::class, 'index'])->name('centers');
         Route::get('centers/create', [CenterController::class, 'create'])->name('centers.create');
         Route::post('centers', [CenterController::class, 'store'])->name('centers.store');
+        Route::get('centers/{center}/edit', [CenterController::class, 'edit'])->name('centers.edit');
+        Route::get('centers/{center}', [CenterController::class, 'show'])->name('centers.show');
+        Route::put('centers/{center}', [CenterController::class, 'update'])->name('centers.update');
+        Route::post('centers/{center}/activate-package', [CenterController::class, 'activatePackage'])->name('centers.activate-package');
+        Route::post('centers/{center}/deactivate-package', [CenterController::class, 'deactivatePackage'])->name('centers.deactivate-package');
+
         Route::post('update_user_role', [InsController::class, 'update_user_role'])->name('update_user_role');
         Route::post('linkCourseModule', [ManageCoursesController::class, 'linkCourseModule'])->name('linkCourseModule');
         Route::get('deleteCourse/{id}', [ManageCoursesController::class, 'deleteCourse'])->name('deleteCourse');
@@ -225,6 +242,9 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
     });
 
 
+    Route::group(['middleware' => ['auth', 'instructororcenter']], function () {
+        Route::get("my_plan", [PackageController::class, 'my_plan'])->name("admin.my_plan");
+    });
     Route::group(['middleware' => ['auth', 'instructor']], function () {
         // routes for instructor only
     });

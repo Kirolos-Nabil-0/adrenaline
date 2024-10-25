@@ -33,7 +33,7 @@
     <div class="page-details mt-3">
         @if (Session::has('success'))
             <div id="ui_notifIt" class="success" style="width: 400px; opacity: 1; right: 10px;">
-                <p><b>Success:</b> Well done Details Submitted Successfully</p>
+                <p><b>Success:</b> {{Session::get("success") ?? 'Well done Details Submitted Successfully'}}</p>
             </div>
         @endif
         <form id="editCourseForm" action="{{ route('course-update', $courseId->id) }}" method="POST"
@@ -50,7 +50,7 @@
                                 <div class="pb-0 mt-0">
                                     <div class="d-flex">
                                         <div class="">
-                                            <h4 class="tx-20 font-weight-bold mb-1 text-white">{{ $lessonsNumber }}</h4>
+                                            <h4 class="tx-20 font-weight-bold mb-1 text-white">{{ $lessonsNumber }} {{$lessonsAvailable ? '/'.$lessonsAvailable : ''}}</h4>
                                             <p class="mb-0 tx-12 text-white op-7"></p>
                                         </div>
                                     </div>
@@ -190,7 +190,7 @@
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>
-                    @admin
+                    @centeradmin
                         @if ($can_add_authorize)
                             <div class="form-group col-lg-6">
                                 <label class="text-danger">The chosen users will be able to add and modify lessons on this
@@ -203,7 +203,7 @@
                                 </select>
                             </div>
                         @endif
-                    @endadmin
+                    @endcenteradmin
                 </div>
                 <div class="form-group mt-4">
                     <label for="description">Description <span class="text-danger">*</span></label>
@@ -402,108 +402,126 @@
                         <h5 class="modal-title" id="exampleModalLabel">Add Lesson</h5>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('create-lesson') }}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            {{-- <input type="hidden" name="section_id" value="{{$sec->id}}"> --}}
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <label for="lessonname">Lesson title <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="lesson_name" id="lessonname"
-                                        placeholder="Lesson Name" required>
-                                    @error('lesson_name')
-                                        <small class="form-text text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="sectionselect" class="d-block">Section <span
-                                            class="text-danger">*</span></label>
-                                    <select name="section_id" id="sectionselect" class="form-control select2-no-search">
-                                        @foreach ($courseId->section as $sec)
-                                            <option value="{{ $sec->id }}">{{ $sec->section_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="video_type" class="d-block">Video Type <span
-                                            class="text-danger">*</span></label>
-                                    <select name="video_type" id="video_type" class="form-control">
-                                        <option value="video_url">Video URL</option>
-                                        <option value="video_upload">Video Upload</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6 form-group" id="video_url_container">
-                                    <label for="videourl">Video URL <span class="text-danger">*</span></label>
-                                    <input type="text" name="url" class="form-control" id="videourl"
-                                        placeholder="URL">
-                                    @error('url')
-                                        <small class="form-text text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group" id="video_upload_container">
-                                    <label for="videoupload">Video Upload <span class="text-danger">*</span></label>
-                                    <input type="file" name="video" class="form-control" id="videoupload"
-                                      >
-                                        <div class="progress mt-2">
-                                            <div id="progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
-                                                aria-valuemin="0" aria-valuemax="100">0%</div>
-                                        </div>
-                                        <input type="hidden" name="uploaded_video_path" id="uploaded_video_path">
-                                        <!-- Success and Danger Badges -->
-                                        <div id="upload-success" class="alert alert-success mt-2" style="display: none;">
-                                            Video uploaded successfully!
-                                        </div>
-                                        <div id="upload-failure" class="alert alert-danger mt-2" style="display: none;">
-                                            Video upload failed. Please try again.
-                                        </div>
-                                    @error('uploaded_video_path')
-                                        <small class="form-text text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="duration">Duration <span class="text-danger">*</span></label>
-                                    <input type="number" min="0" name="duration" class="form-control" id="duration"
-                                        placeholder="Duration">
-                                    @error('duration')
-                                        <small class="form-text text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="mcq_url">MCQ Link </label>
-                                    <input type="url" name="mcq_url" class="form-control" id="mcq_url"
-                                        placeholder="MCQ Link">
-                                    @error('mcq_url')
-                                        <small class="form-text text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="is_lecture_free">Lecture free </label>
-                                    <input type="checkbox" name="is_lecture_free"
-                                        id="is_lecture_free" placeholder="MCQ Link">
-                                    @error('is_lecture_free')
-                                        <small class="form-text text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label for="pdf_attach">PDF File </label>
-                                    <div class="position-relative">
-    
-    
-                                        <input type="file" name="pdf_attach" class="custom-file-input" id="pdf_attach"
-                                            placeholder="pdf attach" accept="application/pdf" >
-                                        <label class="custom-file-label" for="pdf_attach">Choose file</label>
+                        @if (auth()->user()->role == 'admin' || ($current_package && $current_package->lessons_per_course_limit > $lessonsNumber))
+                            <form action="{{ route('create-lesson') }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <label for="lessonname">Lesson title <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="lesson_name" id="lessonname"
+                                            placeholder="Lesson Name" required>
+                                        @error('lesson_name')
+                                            <small class="form-text text-danger">{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                    @error('pdf_attach')
-                                        <small class="form-text text-danger">{{ $message }}</small>
-                                    @enderror
+                                    <div class="col-md-6 form-group">
+                                        <label for="sectionselect" class="d-block">Section <span
+                                                class="text-danger">*</span></label>
+                                        <select name="section_id" id="sectionselect" class="form-control select2-no-search">
+                                            @foreach ($courseId->section as $sec)
+                                                <option value="{{ $sec->id }}">{{ $sec->section_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @if (auth()->user()->role == 'admin' || ($current_package && $current_package->video_support))
+                                        <div class="col-md-6 form-group">
+                                            <label for="video_type" class="d-block">Video Type <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="video_type" id="video_type" class="form-control">
+                                                <option value="video_url">Video URL</option>
+                                                <option value="video_upload">Video Upload</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6 form-group" id="video_upload_container">
+                                            <label for="videoupload">Video Upload <span class="text-danger">*</span></label>
+                                            <input type="file" name="video" class="form-control" id="videoupload" accept="video/*">
+                                                <div class="progress mt-2">
+                                                    <div id="progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                                                        aria-valuemin="0" aria-valuemax="100">0%</div>
+                                                </div>
+                                                <input type="hidden" name="uploaded_video_path" id="uploaded_video_path">
+                                                <!-- Success and Danger Badges -->
+                                                <div id="upload-success" class="alert alert-success mt-2" style="display: none;">
+                                                    Video uploaded successfully!
+                                                </div>
+                                                <div id="upload-failure" class="alert alert-danger mt-2" style="display: none;">
+                                                    Video upload failed. Please try again.
+                                                </div>
+                                            @error('uploaded_video_path')
+                                                <small class="form-text text-danger">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+                                    @endif
+                                    <div class="col-md-6 form-group" id="video_url_container">
+                                        <label for="videourl">Video URL <span class="text-danger">*</span></label>
+                                        <input type="url" name="url" class="form-control" id="videourl"
+                                            placeholder="URL">
+                                        @error('url')
+                                            <small class="form-text text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="duration">Duration <span class="text-danger">*</span></label>
+                                        <input type="number" min="0" name="duration" class="form-control" id="duration"
+                                            placeholder="Duration">
+                                        @error('duration')
+                                            <small class="form-text text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="mcq_url">MCQ Link </label>
+                                        <input type="url" name="mcq_url" class="form-control" id="mcq_url"
+                                            placeholder="MCQ Link">
+                                        @error('mcq_url')
+                                            <small class="form-text text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="is_lecture_free">Lecture free </label>
+                                        <input type="checkbox" name="is_lecture_free"
+                                            id="is_lecture_free" placeholder="MCQ Link">
+                                        @error('is_lecture_free')
+                                            <small class="form-text text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="pdf_attach">PDF File </label>
+                                        <div class="position-relative">
+        
+        
+                                            <input type="file" name="pdf_attach" class="custom-file-input" id="pdf_attach"
+                                                placeholder="pdf attach" accept="application/pdf" >
+                                            <label class="custom-file-label" for="pdf_attach">Choose file</label>
+                                        </div>
+                                        @error('pdf_attach')
+                                            <small class="form-text text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        @elseif ($current_package && $current_package->lessons_per_course_limit <= $lessonsNumber)
+                            <div class="alert alert-warning">
+                                <h5>You have reached out the limit of lessons for this course for your plan which is <b>{{$current_package->lessons_per_course_limit}} lesson for this course</b>.</h5>
+                                <h5>Please contact with the admin for more information.</h5>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
-                                </button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
-                        </form>
+                        @else
+                            <div class="alert alert-warning">
+                                <h5>You don't have a plan that allows you to add lesson.</h5>
+                                <h5>Please contact with the admin for more information.</h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
@@ -551,97 +569,111 @@
             }
         });
 
-
-    $(document).ready(function () {
-        const videoTypeSelect = $('#video_type');
-        const videoUrlContainer = $('#video_url_container');
-        const videoUploadContainer = $('#video_upload_container');
-        const videoUrlInput = $('#uploaded_video_path');
-        const videoInput = $('#videoupload');
-        const progressBar = $('#progress');
-        const progressContainer = $('#progress-container');
-        const successBadge = $('#upload-success');
-        const failureBadge = $('#upload-failure');
-        const submitButton = $('#submit-button');
-
-        // Hide video upload container initially
-        videoUploadContainer.hide();
-        progressContainer.hide();
-        successBadge.hide();
-        failureBadge.hide();
-        progressBar.hide();
-
-        // Toggle visibility based on video type selection
-        videoTypeSelect.on('change', function () {
-            if (this.value === 'video_url') {
-                videoUrlContainer.show();
+    </script>
+    
+    @if (auth()->user()->role == 'admin' || ($current_package && $current_package->video_support))
+        <script>
+            $(document).ready(function () {
+                const videoTypeSelect = $('#video_type');
+                const videoUrlContainer = $('#video_url_container');
+                const videoUploadContainer = $('#video_upload_container');
+                const videoUrlInput = $('#uploaded_video_path');
+                const videoInput = $('#videoupload');
+                const progressBar = $('#progress');
+                const progressContainer = $('#progress-container');
+                const successBadge = $('#upload-success');
+                const failureBadge = $('#upload-failure');
+                const submitButton = $('#submit-button');
+        
+                // Hide video upload container initially
                 videoUploadContainer.hide();
-                videoUrlInput.val(''); // Clear any uploaded path
+                progressContainer.hide();
                 successBadge.hide();
                 failureBadge.hide();
-            } else if (this.value === 'video_upload') {
-                videoUrlContainer.hide();
-                videoUploadContainer.show();
-                successBadge.hide();
-                failureBadge.hide();
-            }
-        });
-
-        // Event listener for when a video is selected for upload
-        videoInput.on('change', function () {
-            const videoFile = this.files[0];
-            if (!videoFile) return;
-
-            const formData = new FormData();
-            formData.append('video', videoFile);
-
-            // Reset the badge visibility when a new upload starts
-            successBadge.hide();
-            failureBadge.hide();
-            progressBar.hide();
-            progressContainer.show();
-            submitButton.prop('disabled', true);
-
-            $.ajax({
-                url: '{{ route("upload-lesson-video") }}',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                'X-CSRF-TOKEN' : '{{ csrf_token() }}'
-                },
-                xhr: function () {
-                    const xhr = new window.XMLHttpRequest();
-                    progressBar.show();
-                    xhr.upload.addEventListener('progress', function (e) {
-                        if (e.lengthComputable) {
-                            const percentComplete = (e.loaded / e.total) * 100;
-                            progressBar.css('width', percentComplete + '%');
-                            progressBar.text(Math.round(percentComplete) + '%');
-                        }
-                    });
-                    return xhr;
-                },
-                success: function (response) {
-                    // Set the video path in the hidden URL input after successful upload
-                    videoUrlInput.val(response.video_path);
-                    progressContainer.hide();
-                    successBadge.show(); // Show the success badge
+                progressBar.hide();
+        
+                // Toggle visibility based on video type selection
+                videoTypeSelect.on('change', function () {
+                    if (this.value === 'video_url') {
+                        videoUrlContainer.show();
+                        videoUploadContainer.hide();
+                        videoUrlInput.val(''); // Clear any uploaded path
+                        successBadge.hide();
+                        failureBadge.hide();
+                    } else if (this.value === 'video_upload') {
+                        videoUrlContainer.hide();
+                        videoUploadContainer.show();
+                        successBadge.hide();
+                        failureBadge.hide();
+                    }
+                });
+        
+                // Event listener for when a video is selected for upload
+                videoInput.on('change', function () {
+                    const videoFile = this.files[0];
+                    if (!videoFile) return;
+        
+                    const formData = new FormData();
+                    formData.append('video', videoFile);
+        
+                    // Reset the badge visibility when a new upload starts
+                    successBadge.hide();
                     failureBadge.hide();
                     progressBar.hide();
-                    submitButton.prop('disabled', false);
-                },
-                error: function (jqXHR) {
-                    progressContainer.hide();
-                    successBadge.hide();
-                    failureBadge.show(); // Show the failure badge
-                }
-            });
-        });
-    });
+                    progressContainer.show();
+                    submitButton.prop('disabled', true);
 
-    </script>
+                    const maxFileSize = {{ $current_package->video_maximum ?? 500 }} * 1024 * 1024;
+                    if (videoFile.size > maxFileSize) {
+                        failureBadge.text('File size exceeds the maximum limit of ' + maxFileSize / (1024 * 1024) + ' MB. Please upload a smaller file.').show();
+                        videoInput.val(''); // Clear the input
+                        progressContainer.hide();
+                        return;
+                    }
+        
+                    $.ajax({
+                        url: '{{ route("upload-lesson-video") }}',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                        'X-CSRF-TOKEN' : '{{ csrf_token() }}'
+                        },
+                        xhr: function () {
+                            const xhr = new window.XMLHttpRequest();
+                            progressBar.show();
+                            xhr.upload.addEventListener('progress', function (e) {
+                                if (e.lengthComputable) {
+                                    const percentComplete = (e.loaded / e.total) * 100;
+                                    progressBar.css('width', percentComplete + '%');
+                                    progressBar.text(Math.round(percentComplete) + '%');
+                                }
+                            });
+                            return xhr;
+                        },
+                        success: function (response) {
+                            // Set the video path in the hidden URL input after successful upload
+                            console.log(response)
+                            videoUrlInput.val(response.video_path);
+                            progressContainer.hide();
+                            successBadge.show(); // Show the success badge
+                            failureBadge.hide();
+                            progressBar.hide();
+                            submitButton.prop('disabled', false);
+                        },
+                        error: function (response) {
+                            progressContainer.hide();
+                            console.log(response);
+                            
+                            successBadge.hide();
+                            failureBadge.text("").show(); // Show the failure badge
+                        }
+                    });
+                });
+            });
+        </script>
+    @endif
     <!--Internal  Chart.bundle js -->
     <script src="{{ URL::asset('js/dashboard/new/chart.js') }}"></script>
     <script src="{{ URL::asset('chartjs/dist/chart.js') }}"></script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Package;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CenterResource extends JsonResource
@@ -18,7 +19,9 @@ class CenterResource extends JsonResource
             'id' => $this->id,
             'name' => $this->firstname,
             'email' => $this->email,
-            'profile_photo_path' => $this->profile_photo_path,
+            'profile_photo_url' => $this->profile_photo_url,
+            'package' => PackageResource::collection($this->whenLoaded('packages')),
+            'current_package' => new PackageResource($this->currentPackage())
         ];
     }
 }
