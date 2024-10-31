@@ -62,72 +62,78 @@
                             @enderror
                         </div>
 
-                        <div class="form-group mb-3 col-lg-6">
-                            <label for="exampleInputEmail1">Course Type</label>
-                            <select id="type" name="type" class="form-control SlectBox" required
-                                onchange="toggleFields()">
-                                <option value="universities" selected>Universities Courses</option>
-                                <option value="public">General Courses</option>
-                                <option value="high_school">Course High School</option>
-                                <option value="public_medicine">General medicine Courses</option>
-                            </select>
-                        </div>
+                        @admin
+                            <div class="form-group mb-3 col-lg-6">
+                                <label for="exampleInputEmail1">Course Type</label>
+                                <select id="type" name="type" class="form-control SlectBox" required
+                                    onchange="toggleFields()">
+                                    <option value="universities" selected>Universities Courses</option>
+                                    <option value="public">General Courses</option>
+                                    <option value="high_school">Course High School</option>
+                                    <option value="public_medicine">General medicine Courses</option>
+                                </select>
+                            </div>
 
-                        <div class="form-group mb-3 col-lg-6" id="universityField">
-                            <label for="exampleInputEmail1">University Name</label>
-                            <select id="university" name="university" class="form-control SlectBox">
-                                <option selected disabled>Select University</option>
-                                @php
-                                    $i = 0;
-                                @endphp
-                                @foreach ($universities as $university)
+                            <div class="form-group mb-3 col-lg-6" id="universityField">
+                                <label for="exampleInputEmail1">University Name</label>
+                                <select id="university" name="university" class="form-control SlectBox">
+                                    <option selected disabled>Select University</option>
                                     @php
-                                        $i++;
+                                        $i = 0;
                                     @endphp
-                                    <option value="{{$university->id}}">{{ $university->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                                    @foreach ($universities as $university)
+                                        @php
+                                            $i++;
+                                        @endphp
+                                        <option value="{{$university->id}}">{{ $university->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+    
+                            <div class="form-group mb-3 col-lg-6" id="collegeField">
+                                <label for="exampleInputEmail1">College Name</label>
+                                <select id="college_id" name="college_id" class="form-control SlectBox">
+                                    <option value="">Select University first</option>
+                                </select>
+                            </div>
+    
+                            <div class="form-group mb-3 col-lg-6" id="collegeYearField">
+                                <label for="exampleInputEmail1">College year</label>
+                                <select id="college_year" name="college_year" class="form-control SlectBox">
+                                    <option value="">College year</option>
+                                </select>
+                            </div>
+    
+                            <div class="form-group mb-3 col-lg-6" id="semesterField">
+                                <label for="exampleInputEmail1">Semester</label>
+                                <select id="semester" name="semester" class="form-control SlectBox">
+                                    <option value="1" selected>First semester</option>
+                                    <option value="2">Second semester</option>
+                                </select>
+                            </div>
+                        @endadmin 
+                        
+                        @centerinstructor
+                            <input type="hidden" name="type" value="private">
+                        @endcenterinstructor 
 
-                        <div class="form-group mb-3 col-lg-6" id="collegeField">
-                            <label for="exampleInputEmail1">College Name</label>
-                            <select id="college_id" name="college_id" class="form-control SlectBox">
-                                <option value="">Select University first</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3 col-lg-6" id="collegeYearField">
-                            <label for="exampleInputEmail1">College year</label>
-                            <select id="college_year" name="college_year" class="form-control SlectBox">
-                                <option value="">College year</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3 col-lg-6" id="semesterField">
-                            <label for="exampleInputEmail1">Semester</label>
-                            <select id="semester" name="semester" class="form-control SlectBox">
-                                <option value="1" selected>First semester</option>
-                                <option value="2">Second semester</option>
-                            </select>
-                        </div>
                         <div class="form-group mb-3 col-lg-6">
                             <label for="price_ar">Price (EGP)<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control numeric" id="price_ar" placeholder="Enter Course Price"
-                                name="price_ar">
-
+                            <input type="text" class="form-control numeric" id="price_ar" placeholder="Enter Course Price"name="price_ar">
+                        </div>
+                        <div class="form-group mb-3 col-lg-6">
                             <label for="price_en">Price (USD)<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control numeric" id="price_en" placeholder="Enter Course Price"
-                                name="price_en">
-
+                            <input type="text" class="form-control numeric" id="price_en" placeholder="Enter Course Price" name="price_en">
+                        </div>
+                        <div class="form-group mb-3 col-lg-6">
                             <label for="discount_ar">Discount (EGP)<span class="text-danger">*</span></label>
-                            <input type="number" min="0" class="form-control numeric" id="discount_ar"
-                                placeholder="Enter Course Discount" name="discount_ar" min="0" max="100">
-
+                            <input type="number" min="0" class="form-control numeric" id="discount_ar"placeholder="Enter Course Discount" name="discount_ar" min="0" max="100">
+                        </div>
+                        <div class="form-group mb-3 col-lg-6">
                             <label for="discount_en">Discount (USD)<span class="text-danger">*</span></label>
-                            <input type="number" min="0" class="form-control numeric" id="discount_en"
-                                placeholder="Enter Course Discount" name="discount_en" min="0" max="100">
-
-
+                            <input type="number" min="0" class="form-control numeric" id="discount_en"placeholder="Enter Course Discount" name="discount_en" min="0" max="100">
+                        </div>
+                        <div class="form-group mb-3 col-lg-6">
                             <label for="freecou" class="mt-3">Free</label>
                             <input type="checkbox" name="free" id="freecou">
                             @error('price')

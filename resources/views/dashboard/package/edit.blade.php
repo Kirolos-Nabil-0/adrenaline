@@ -25,16 +25,6 @@
 @section('content-dashboard')
 
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     @if (session()->has('Add'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <strong>{{ session()->get('Add') }}</strong>
@@ -134,17 +124,17 @@
 
                             <div class="col-md-6">
                                 <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input" name="video_support" id="video_support" {{$package->video_support ? 'checked' : ''}} onchange="supportVideo()">
+                                    <input type="checkbox" class="form-check-input" name="video_support" id="video_support" {{($package->video_support || old("video_support")) ? 'checked' : ''}} onchange="supportVideo()">
                                     <label for="video_support" class="form-check-label">Video Upload Support <span class="text-danger">*</span></label>
                                     @error('video_support')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6" id="video_maximum_container" style="display: {{$package->video_support ? 'block' : 'none'}};">
+                            <div class="col-md-6" id="video_maximum_container" style="display: {{($package->video_support || old('video_support')) ? 'block' : 'none'}};">
                                 <div class="form-group mb-3">
                                     <label for="video_maximum">Video Maximum in MB <span class="text-danger">*</span>  <span class="text-muted">(If You leave it, it will be unlimited)</span></label>
-                                    <input type="number" min="5" name="video_maximum" id="video_maximum" value="{{$package->video_maximum}}" class="form-control">
+                                    <input type="number" min="5" name="video_maximum" id="video_maximum" value="{{$package->video_maximum ? $package->video_maximum : null}}" class="form-control">
                                     @error('video_maximum')
                                         <span class="text-danger">{{$message}}</span>
                                     @enderror

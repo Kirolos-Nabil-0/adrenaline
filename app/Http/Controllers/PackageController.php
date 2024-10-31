@@ -28,7 +28,7 @@ class PackageController extends Controller{
             'duration' => 'required|numeric|min:0',
             'duration_type' => 'required|in:year,month,week,day',
             'video_support' => 'nullable|in:on,off',
-            'video_maximum' => 'nullable|required_with:video_support,on|numeric|min:5|max:1024',
+            'video_maximum' => 'nullable|numeric|min:5|max:1024',
             'courses_limit' => 'nullable|numeric|min:1',
             'lessons_per_course_limit' => 'nullable|numeric|min:1',
         ],[
@@ -98,7 +98,7 @@ class PackageController extends Controller{
             'duration' => 'required|numeric|min:0',
             'duration_type' => 'required|in:year,month,week,day',
             'video_support' => 'nullable|in:on,off',
-            'video_maximum' => 'nullable|required_with:video_support,on|numeric|min:5|max:1024',
+            'video_maximum' => 'nullable|numeric|min:5|max:1024',
             'courses_limit' => 'nullable|numeric|min:1',
             'lessons_per_course_limit' => 'nullable|numeric|min:1',
         ],[

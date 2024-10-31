@@ -4,6 +4,7 @@ use App\Http\Controllers\AcadmicController;
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CourseReviewController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\YoutubeController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,7 @@ Route::controller(AcadmicController::class)->group(function () {
     Route::post('/courses/joinCourse', 'joinCourse')->middleware("auth:sanctum");
     Route::get('/semesters/getCourseJoin', 'getCourseJoin');
     Route::get('/search', [ApiController::class, 'search']);
+    Route::get('/stats', [StatsController::class, 'index']);
 });
 Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/register', [ApiAuthController::class, 'register']);

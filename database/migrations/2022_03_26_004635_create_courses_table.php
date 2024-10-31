@@ -18,7 +18,7 @@ class CreateCoursesTable extends Migration
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
-            $table->enum('type', ['universities', "high_school", "public", 'public_medicine'])->default("public");
+            $table->enum('type', ['universities', "high_school", "public", 'private', 'public_medicine'])->default("public");
             $table->float('price')->nullable();
             $table->float('price_en')->nullable();
             $table->float('price_ar')->nullable();

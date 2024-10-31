@@ -19,8 +19,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-    public function index()
-    {
+    public function index(){
         $user = auth()->user();
 
         // Get all counts only once
@@ -47,7 +46,7 @@ class AdminController extends Controller
             $enrollmentCount = CourseCode::where('is_used', true)->count();
             $usersCount = User::whereNull('role')->count();
             $sectionsCount = Section::count();
-            $centersCount = User::where('role', 'cetner')->count();
+            $centersCount = User::where('role', 'center')->count();
             $codesCount = CourseCode::count();
         } elseif ($user->role == 'instructor') {
             // Instructor can see their own courses
@@ -184,16 +183,14 @@ class AdminController extends Controller
         return view('dashboard.enrollment-history');
     }
 
-    public function deleteUserCourse($id)
-    {
+    public function deleteUserCourse($id){
         UserCourse::find($id)->delete();
         return response()->json([
             'success' => true
         ]);
     }
 
-    public function changeStatus($id)
-    {
+    public function changeStatus($id){
         $c = UserCourse::find($id);
         $c->status = $c->status == 1 ? 0 : 1;
         $c->save();
@@ -202,8 +199,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function addStudent()
-    {
+    public function addStudent(){
         $users = User::all()->except(Auth::id(1));
         $courses = Courses::all();
         $modules = Module::leftJoin('courses', 'module_id', '=', 'modules.id')
@@ -216,8 +212,7 @@ class AdminController extends Controller
         return view('dashboard.add-student', compact('users', 'courses', 'modules'));
     }
 
-    public function enrollmentStudent(Request $request)
-    {
+    public function enrollmentStudent(Request $request){
         $failed_users = [];
         if ($request->users) {
             if (count($request->users) > 0) {

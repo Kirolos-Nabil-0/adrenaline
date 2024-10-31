@@ -156,6 +156,12 @@ class ApiController extends Controller
         // Get the authenticated user
         $user = Auth::guard('sanctum')->user();
 
+        // only for test stats
+        $test_course = Courses::find($id);
+        if($test_course){
+            $test_course->students += 1;
+            $test_course->save();
+        }
 
         $data = Courses::where('id', $id)
             ->where('is_archived', '0')
