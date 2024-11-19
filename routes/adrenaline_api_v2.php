@@ -4,6 +4,7 @@ use App\Http\Controllers\AcadmicController;
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CourseReviewController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\YoutubeController;

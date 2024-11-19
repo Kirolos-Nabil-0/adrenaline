@@ -12,6 +12,11 @@
                         {{Session::get('success')}}
                     </div>
                 @endif
+                @if(Session::has('danger'))
+                    <div class="alert alert-danger" role="alert">
+                        {{Session::get('danger')}}
+                    </div>
+                @endif
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped" id="centers_table">
                         <thead>
@@ -49,6 +54,11 @@
                                     </td>
                                     <td class="d-flex align-items-center gap-1">
                                         <a href="{{route("centers.edit", $center)}}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
+                                        <form action="{{route('centers.destroy', $center)}}" method="post">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-danger btn-sm mx-1" onclick="return confirm('Are you sure you want to delete this center? it will delete all of its associated coureses and teachers!!')"><i class="fa fa-trash"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty

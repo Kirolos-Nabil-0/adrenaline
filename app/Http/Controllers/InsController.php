@@ -182,4 +182,13 @@ class InsController extends Controller
         
         return back()->with('success', 'تم الغاء تفعيل الخطة بنجاح');
     }
+
+    public function destroy(User $instructor){
+        if($instructor->owned_courses){
+            return back()->with('danger', 'لا يمكن حذف هذا المعلم لانه مرتبط بكورسات');
+        }
+        
+        $instructor->delete();
+        return redirect()->route('instructors')->with('success', 'تم حذف المعلم بنجاح');
+    }
 }

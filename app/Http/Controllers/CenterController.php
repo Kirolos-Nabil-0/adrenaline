@@ -103,4 +103,12 @@ class CenterController extends Controller
         return back()->with('success', 'تم الغاء تفعيل خطة السنتر بنجاح');
     }
 
+    public function destroy(User $center){
+        if($center->getCenterCourses() || $center->instructors){
+            return back()->with('danger', 'لا يمكن حذف هذا السنتر لانه مرتبط بمعلمين وكورسات');
+        }
+        
+        $center->delete();
+        return redirect()->route('centers')->with('success', 'تم حذف السنتر بنجاح');
+    }
 }

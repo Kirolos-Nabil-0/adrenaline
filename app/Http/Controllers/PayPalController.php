@@ -19,24 +19,33 @@ class PayPalController extends Controller
 
     public function payWithPaymob(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'total' => 'required|numeric|min:0',
-            'phone' => 'required|string|min:10|max:15',
-            'course_id' => 'required|exists:courses,id',
-            'user_id' => 'required|exists:users,id',
-            'coin' => 'required|string|in:USD,EGP',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'total' => 'required|numeric|min:0',
+        //     'phone' => 'required|string|min:10|max:15',
+        //     'course_id' => 'required|exists:courses,id',
+        //     'user_id' => 'required|exists:users,id',
+        //     'coin' => 'required|string|in:USD,EGP',
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-        $user = User::find($request->user_id);
-        $total = $request->total;
-        $phone = $request->phone;
-        $course_id = $request->course_id;
+
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors()
+        //     ], 422);
+        // }
+        // $data = $request->all();
+
+        $data['user_id'] = 1; //for test
+        $data['course_id'] = 1; //for test
+        $data['total'] = 1000; //for test
+        $data['phone'] = 01142366710; //for test
+        $data['coin'] = 'EGP'; //for test
+        
+        $user = User::find($data['user_id']);
+        $total = $data['total'];
+        $phone = $data['phone'];
+        $course_id = $data['course_id'];
         $course = Courses::find($course_id);
         $payment = new PaymobPayment();
         $response = $payment
@@ -55,7 +64,7 @@ class PayPalController extends Controller
         $paymentTable->total = $total;
         $paymentTable->payment_id = $response['payment_id'];
         $paymentTable->status = false;
-        $paymentTable->currency = $request->coin;
+        $paymentTable->currency = $data['coin'];
         $paymentTable->phone = $phone;
         $paymentTable->save();
         return  response()->json($response);
@@ -65,6 +74,7 @@ class PayPalController extends Controller
     {
         $payment = new PaymobPayment();
         $response = $payment->verify($request);
+        dd($request['success']);
         if ($response['success'] == true) {
             $paymentTable = Payment::where('payment_id', $response['payment_id'])->first();
             $code = new CourseCode();
@@ -77,40 +87,60 @@ class PayPalController extends Controller
             $code->save();
             $user = User::find($paymentTable->user_id);
             $user->notify(new LoginNotification());
-            return redirect("https://adrenaline-edu.com/success");
+            return redirect("/success");
         }
-        return redirect("https://adrenaline-edu.com/failed");
+        return redirect("/failed");
     }
 
 
     public function payWithPaymobWallet(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'total' => 'required|numeric|min:0',
-            'phone' => 'required|string|min:10|max:15',
-            'course_id' => 'required|exists:courses,id',
-            'user_id' => 'required|exists:users,id',
-            'coin' => 'required|string|in:USD,EGP',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'total' => 'required|numeric|min:0',
+        //     'phone' => 'required|string|min:10|max:15',
+        //     'course_id' => 'required|exists:courses,id',
+        //     'user_id' => 'required|exists:users,id',
+        //     'coin' => 'required|string|in:USD,EGP',
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-        $user = User::find($request->user_id);
-        $total = $request->total;
-        $phone = $request->phone;
-        $course_id = $request->course_id;
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors()
+        //     ], 422);
+        // }
+
+        // $data = $request->all();
+        
+        $data['user_id'] = 1; //for test
+        $data['course_id'] = 1; //for test
+        $data['total'] = 1000; //for test
+        $data['phone'] = 01010101010; //for test
+        $data['coin'] = 'EGP'; //for test
+
+        $user = User::find($data['user_id']);
+        $total = $data['total'];
+        $phone = $data['phone'];
+        $course_id = $data['course_id'];
+
         $payment = new PaymobWalletPayment();
         $response = $payment
-            ->setUserFirstName($user->firstname . $user->lastname ?? "test")
-            ->setUserLastName($course_id . '-' . $user->id . '-' . $phone . '-' . $total)
-            ->setUserEmail($user->email)
-            ->setUserPhone($phone) // $user->phone ??
-            ->setAmount($total)
-            ->pay();
+        ->setUserFirstName("test")
+        ->setUserLastName("test")
+        ->setUserEmail("test@gmail.com")
+        ->setUserPhone($phone)
+        ->setAmount($total)
+        ->pay();
+
+        // $payment = new PaymobWalletPayment();
+        // $response = $payment
+        // ->setUserFirstName($user->firstname ?? "test")
+        // ->setUserLastName($user->lastname ?? "test")
+        // ->setUserEmail($user->email ?? "test@gmail.com")
+        // ->setUserPhone($phone)
+        // ->setAmount($total)
+        //     ->pay();
+            dd($response);
         return  response()->json($response);
     }
 
@@ -156,5 +186,17 @@ class PayPalController extends Controller
         }
 
         return $randomString;
+    }
+
+    function generateKashierOrderHash($order){
+        $mid = "MID-123-123"; //your merchant id
+        $amount = $order->amount; //eg: 100
+        $currency = $order->currency; //eg: "EGP"
+        $orderId = $order->merchantOrderId; //eg: 99, your system order ID
+        $secret = "yourApiKey";
+        $CustomerReference="100"; //your merchant id to save card
+        $path = "/?payment=".$mid.".".$orderId.".".$amount.".".$currency.(isset( $CustomerReference) ?(".".$CustomerReference):null);
+        $hash = hash_hmac( 'sha256' , $path , $secret ,false);
+        return $hash;
     }
 }

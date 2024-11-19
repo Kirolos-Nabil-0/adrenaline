@@ -194,6 +194,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::get('instructors/{instructor}', [InsController::class, 'show'])->name('instructors.show');
         Route::get('instructors/{instructor}/edit', [InsController::class, 'edit'])->name('instructors.edit');
         Route::patch('instructors/{instructor}', [InsController::class, 'update'])->name('instructors.update');
+        Route::delete('instructors/{instructor}', [InsController::class, 'destroy'])->name('instructors.destroy');
         Route::post('instructors/{instructor}/activate-package', [InsController::class, 'activatePackage'])->name('instructors.activate-package');
         Route::post('instructors/{instructor}/deactivate-package', [InsController::class, 'deactivatePackage'])->name('instructors.deactivate-package');
         Route::post('remove_user', [InsController::class, 'remove_user'])->name('remove_user');
@@ -224,6 +225,7 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::get('centers/{center}/edit', [CenterController::class, 'edit'])->name('centers.edit');
         Route::get('centers/{center}', [CenterController::class, 'show'])->name('centers.show');
         Route::put('centers/{center}', [CenterController::class, 'update'])->name('centers.update');
+        Route::delete('centers/{center}', [CenterController::class, 'destroy'])->name('centers.destroy');
         Route::post('centers/{center}/activate-package', [CenterController::class, 'activatePackage'])->name('centers.activate-package');
         Route::post('centers/{center}/deactivate-package', [CenterController::class, 'deactivatePackage'])->name('centers.deactivate-package');
 
@@ -255,3 +257,12 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
     });
     Route::get('logout' , [AuthenticatedSessionController::class , 'destroy'])->name('global_logout');
 });
+
+
+
+// test
+Route::get('test-payment', [PayPalController::class, 'payWithPaymob']);
+Route::get('test-payment-wallet', [PayPalController::class, 'payWithPaymobWallet']);
+Route::get('callback', [PayPalController::class, 'verifyWithPaymob']);
+Route::get('success', function(){return "success";});
+Route::get('failed', function(){return "failed";});
