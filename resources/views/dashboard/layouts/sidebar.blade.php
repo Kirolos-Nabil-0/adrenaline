@@ -256,6 +256,22 @@ $currentUser = auth()->user();
                             <li><a class="slide-item" href="{{ route('centers.create') }}">Add new Center</a></li>
                         </ul>
                     </li>
+                    <li class="slide">
+                        <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}">
+                            <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="side-menu__icon"
+                            viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5zm-2 3h4l1-4h-6l1 4zm1-10v2h2v-2h-2z"/>
+                        </svg>
+
+                            <span class="side-menu__label">Users</span><i class="angle fe fe-chevron-down"></i>
+                        </a>
+                        <ul class="slide-menu">
+                            <li><a class="slide-item" href="{{ route('users') }}">All Users</a></li>
+                        </ul>
+                    </li>
                 @endadmin
                 <!-- <li class="side-item side-item-category">General</li> -->
                 <!-- <li class="slide">

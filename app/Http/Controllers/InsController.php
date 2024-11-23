@@ -184,7 +184,7 @@ class InsController extends Controller
     }
 
     public function destroy(User $instructor){
-        if($instructor->owned_courses){
+        if($instructor->owned_courses->count() > 0){
             return back()->with('danger', 'لا يمكن حذف هذا المعلم لانه مرتبط بكورسات');
         }
         

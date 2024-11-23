@@ -24,6 +24,7 @@ use App\Http\Controllers\ReviewAppController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\UserManagementController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 /*
@@ -217,6 +218,11 @@ Route::group(['middleware' => ['auth', 'checkIp']], function () {
         Route::post('enrollment', [AdminController::class, 'enrollmentStudent'])->name('enrollment');
         Route::get('delete-user/{id}', [AdminController::class, 'deleteUserCourse'])->name('delete-user');
         Route::get('edit-status/{id}', [AdminController::class, 'changeStatus'])->name('edit-status');
+
+        // user routes
+        Route::get('users', [UserManagementController::class, 'index'])->name('users');
+        Route::post('users/{user}', [UserManagementController::class, 'change_user_role'])->name('users.change_user_role');
+        Route::delete('users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
 
         // center routes
         Route::get('centers', [CenterController::class, 'index'])->name('centers');

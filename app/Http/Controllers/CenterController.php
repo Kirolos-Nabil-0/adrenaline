@@ -104,7 +104,7 @@ class CenterController extends Controller
     }
 
     public function destroy(User $center){
-        if($center->getCenterCourses() || $center->instructors){
+        if(count($center->getCenterCourses()) > 0 || $center->instructors->count() > 0){
             return back()->with('danger', 'لا يمكن حذف هذا السنتر لانه مرتبط بمعلمين وكورسات');
         }
         

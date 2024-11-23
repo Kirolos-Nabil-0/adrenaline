@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CourseCode;
 use App\Models\CourseModifier;
+use App\Models\TemporaryVideo;
 use App\Models\User;
 use App\Models\Lesson;
 use App\Models\Module;
@@ -309,7 +310,6 @@ class ManageCoursesController extends Controller
         }
     
         // Get all request data
-        // dd($request);
         $data = [
             'lesson_name' => $request->input('lesson_name'),
             'section_id' => $request->input('section_id'),
@@ -336,6 +336,12 @@ class ManageCoursesController extends Controller
     
         // Create a new lesson with the provided data
         Lesson::create($data);
+
+        if($request->input('uploaded_video_path')){
+            $temporaryVideo = TemporaryVideo::where('video_path', 'uploaded/videos/' . $request->input('uploaded_video_path'))
+                ->where('user_id', Auth::id())->first();
+            $temporaryVideo->delete();
+        }
     
         return redirect()->back()->with("success", 'Lesson creatd successfully');
     }
@@ -396,9 +402,10 @@ class ManageCoursesController extends Controller
         if($les){
             $course = $les->section->course;
             $sections = $course->section;
+            $current_package = User::find(Auth::id())->currentPackage();
             return view(
                 'dashboard.edit-lesson',
-                compact('les', 'course', 'sections')
+                compact('les', 'course', 'sections', 'current_package')
             );
         }else{
             throw new Exception("Lesson Not found", 404);
@@ -439,6 +446,10 @@ class ManageCoursesController extends Controller
         }
 
         if(($request->input("video_type") == 'video_upload' && $request->input("uploaded_video_path")) || ($request->input("video_type") == 'video_url' && $lesson->video != null)){
+            $temporaryVideo = TemporaryVideo::where('video_path', 'uploaded/videos/' . $request->input('uploaded_video_path'))
+                ->where('user_id', Auth::id())->first();
+            $temporaryVideo->delete();
+            
             $data['video'] = $request->input('uploaded_video_path');
 
             // Check if the file exists
@@ -519,6 +530,10 @@ class ManageCoursesController extends Controller
             $path = public_path('uploaded/videos');
                 
             $videoFile->move($path, $videoName);
+            TemporaryVideo::create([
+                'user_id' => $user->id,
+                'video_path' => 'uploaded/videos/' . $videoName,
+            ]);
 
             return response()->json(['video_path' => $videoName]);
         }else{

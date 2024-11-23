@@ -43,6 +43,12 @@ class UserSeeder extends Seeder
                 'email' => 'instructor@gmail.com',
                 'password' => Hash::make('12345678'),
                 'role' => 'instructor'
+            ],
+            [
+                'firstname' => 'user',
+                'lastname' => 'one',
+                'email' => 'user@gmail.com',
+                'password' => Hash::make('12345678'),
             ]
         ]);
         DB::table('setting_webs')->insert([

@@ -452,6 +452,8 @@
                                                 <small class="form-text text-danger">{{ $message }}</small>
                                             @enderror
                                         </div>
+                                    @else
+                                    <input type="hidden" name="video_type" value="video_url">
                                     @endif
                                     <div class="col-md-6 form-group" id="video_url_container">
                                         <label for="videourl">Video URL <span class="text-danger">*</span></label>

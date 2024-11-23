@@ -40,14 +40,45 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-6 form-group">
-                        <label for="video_type" class="d-block">Video Type <span
-                                class="text-danger">*</span></label>
-                        <select name="video_type" id="video_type" class="form-control">
-                            <option value="video_url" {{ $les->video_type == 'video_url' ? 'selected' : '' }}>Video URL</option>
-                            <option value="video_upload" {{ $les->video_type == 'video_upload' ? 'selected' : '' }}>Video Upload</option>
-                        </select>
-                    </div>
+                    @if (auth()->user()->role == 'admin' || ($current_package && $current_package->video_support))
+                        <div class="col-md-6 form-group">
+                            <label for="video_type" class="d-block">Video Type <span
+                                    class="text-danger">*</span></label>
+                            <select name="video_type" id="video_type" class="form-control">
+                                <option value="video_url" {{ $les->video_type == 'video_url' ? 'selected' : '' }}>Video URL</option>
+                                <option value="video_upload" {{ $les->video_type == 'video_upload' ? 'selected' : '' }}>Video Upload</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group" id="video_upload_container">
+                            <label for="videoupload">Video Upload <span class="text-danger">*</span></label>
+                            <input type="file" name="video" class="form-control" id="videoupload">
+                            <div class="progress mt-2">
+                                <div id="progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                                    aria-valuemin="0" aria-valuemax="100">0%</div>
+                            </div>
+                            <input type="hidden" name="uploaded_video_path" id="uploaded_video_path">
+                            <!-- Success and Danger Badges -->
+                            <div id="upload-success" class="alert alert-success mt-2" style="display: none;">
+                                Video uploaded successfully!
+                            </div>
+                            <div id="upload-failure" class="alert alert-danger mt-2" style="display: none;">
+                                Video upload failed. Please try again.
+                            </div>
+                            @error('uploaded_video_path')
+                                <small class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                            @if ($les->video_type == 'video_upload' && $les->video)
+                                <div class="col-md-6 form-group">
+                                    <video controls style="width: 100%; max-height: 500px;">
+                                        <source src="{{ asset($les->video) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            @endif
+                        </div>
+                    @else
+                        <input type="hidden" name="video_type" value="video_url">
+                    @endif
 
                     <div class="col-md-6 form-group" id="video_url_container">
                         <label for="videourl">Video URL <span class="text-danger">*</span></label>
@@ -56,33 +87,6 @@
                         @error('url')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
-                    </div>
-                    <div class="col-md-6 form-group" id="video_upload_container">
-                        <label for="videoupload">Video Upload <span class="text-danger">*</span></label>
-                        <input type="file" name="video" class="form-control" id="videoupload">
-                        <div class="progress mt-2">
-                            <div id="progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
-                                aria-valuemin="0" aria-valuemax="100">0%</div>
-                        </div>
-                        <input type="hidden" name="uploaded_video_path" id="uploaded_video_path">
-                        <!-- Success and Danger Badges -->
-                        <div id="upload-success" class="alert alert-success mt-2" style="display: none;">
-                            Video uploaded successfully!
-                        </div>
-                        <div id="upload-failure" class="alert alert-danger mt-2" style="display: none;">
-                            Video upload failed. Please try again.
-                        </div>
-                        @error('uploaded_video_path')
-                            <small class="form-text text-danger">{{ $message }}</small>
-                        @enderror
-                        @if ($les->video_type == 'video_upload' && $les->video)
-                            <div class="col-md-6 form-group">
-                                <video controls style="width: 100%; max-height: 500px;">
-                                    <source src="{{ asset($les->video) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        @endif
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="duration">Duration <span
@@ -146,6 +150,7 @@
 @endsection
 
 @section('js')
+@if (auth()->user()->role == 'admin' || ($current_package && $current_package->video_support))
     <script>
 
     $(document).ready(function () {
@@ -246,4 +251,5 @@
     });
 
     </script>
+    @endif
 @endsection
