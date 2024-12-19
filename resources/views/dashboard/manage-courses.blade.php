@@ -43,7 +43,7 @@
                 <div class="row row-sm">
                     <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                         <div class="card overflow-hidden sales-card bg-primary-gradient">
-                            <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+                            <div class="pl-3 pr-3 pb-2 pt-0">
                                 <div class="">
                                     <h6 class="mb-3 tx-12 text-white">Number of lessons</h6>
                                 </div>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                         <div class="card overflow-hidden sales-card bg-danger-gradient">
-                            <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+                            <div class="pl-3 pr-3 pb-2 pt-0">
                                 <div class="">
                                     <h6 class="mb-3 tx-12 text-white">Number of sections</h6>
                                 </div>
@@ -80,7 +80,7 @@
                     {{-- @admin --}}
                     <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                         <div class="card overflow-hidden sales-card bg-success-gradient">
-                            <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+                            <div class="pl-3 pr-3 pb-2 pt-0">
                                 <div class="">
                                     <h6 class="mb-3 tx-12 text-white">Number of enrollment</h6>
                                 </div>
@@ -100,7 +100,7 @@
                     {{-- @endadmin
                     <div class="col-xl-4 col-lg-6 col-md-6 col-xm-12">
                         <div class="card overflow-hidden sales-card bg-warning-gradient">
-                            <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+                            <div class="pl-3  pr-3 pb-2 pt-0">
                                 <div class="">
                                     <h6 class="mb-3 tx-12 text-white">Number of Students</h6>
                                 </div>

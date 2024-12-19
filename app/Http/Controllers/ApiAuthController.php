@@ -13,6 +13,7 @@ use Ichtrojan\Otp\Otp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
@@ -105,6 +106,7 @@ class ApiAuthController extends Controller
         $request->validate([
             'email' => 'required|email',
         ]);
+        Log::info($request);
 
         $inpout = $request->input('email');
         $user = User::where('email', $inpout)->first();
